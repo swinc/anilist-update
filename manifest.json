@@ -1,8 +1,8 @@
 {
    "name": "AutoUpdater for AniList",
    "version": "1.0",
-   "description": "Autoupdate animelist!",
-   "permissions": ["activeTab", "declarativeContent", "storage"],
+   "description": "An auto-updater for AniList.co",
+   "permissions": ["activeTab", "declarativeContent", "storage", "identity"],
    "options_page": "options.html",
    "background": {
       "scripts": ["background.js"],
