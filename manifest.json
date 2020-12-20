@@ -1,5 +1,5 @@
 {
-   "name": "Animelist Autoupdate",
+   "name": "AutoUpdater for AniList",
    "version": "1.0",
    "description": "Autoupdate animelist!",
    "permissions": ["activeTab", "declarativeContent", "storage"],
