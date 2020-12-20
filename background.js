@@ -2,13 +2,17 @@
 
 /* globals chrome */
 
-var targetSites = ['anilist.co', 'netflix.com', 'hulu.com']
-
 // rule for when to display the extention's page action
 var targetPagesRule = {
   conditions: [
     new chrome.declarativeContent.PageStateMatcher({
-      pageUrl: { hostContains: targetSites }
+      pageUrl: { hostContains: 'anilist.co' }
+    }),
+    new chrome.declarativeContent.PageStateMatcher({
+      pageUrl: { hostContains: 'netflix.com' }
+    }),
+    new chrome.declarativeContent.PageStateMatcher({
+      pageUrl: { hostContains: 'hulu.com' }
     })
   ],
   actions: [new chrome.declarativeContent.ShowPageAction()]
