@@ -3,7 +3,7 @@
    "version": "1.0",
    "description": "An auto-updater for AniList.co",
    "permissions": ["activeTab", "declarativeContent", "storage", "identity"],
-   "options_page": "options.html",
+   "options_page": "options/options.html",
    "background": {
       "scripts": ["background.js"],
       "persistent": false
