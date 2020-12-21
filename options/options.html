@@ -18,7 +18,7 @@
       <p>You can test this connection by using this extention to set your account language to 'english'.</p>
       <p>
         <button id="anilist-test-button">Test Connection</button>
-        <p><span id='test-connection-result'></span></p>
+        <div id='test-connection-result'></div>
       </p>
     </div>
     <!-- end -->
@@ -29,20 +29,20 @@
     <p>E.g., https://anilist.co/anime/<span class="highlight">16498</span>/Attack-on-Titan/</p>
     <form>
       <label for="unauth-media-id">Media ID: </label>
-      <input type="text" size="8" id="unauth-media-id" name="unauth-media-id">
+      <input type="text" size="8" id="unauth-media-id" name="unauth-media-id" placeholder="16498">
       <p><input type="submit" id="unauth-media-submit" value="Pull Media"></p>
     </form>
-    <p>Result: <span id="unauth-media-result"></span></p>
+    <div id="unauth-media-result"></div>
     <hr>
     <h2>Test Authenticated API</h2>
     <p>You must be logged into Anilist.co for success.</p>
     <p>Save a specific media item to your profile by reference to its Media ID, then check for yourself.</p>
     <form>
       <label for="auth-media-id">Media ID: </label>
-      <input type="text" size="8" id="auth-media-id" name="auth-media-id">
+      <input type="text" size="8" id="auth-media-id" name="auth-media-id" placeholder="16498">
       <p><input type="submit" id="auth-media-submit" value="Save Media to Profile"></p>
     </form>
-    <p>Result: <span id="auth-media-result"></span></p>
-  <script src="options.js"></script>
+    <div id="auth-media-result"></div>
+  <script type="module" src="options.js"></script>
   </body>
 </html>

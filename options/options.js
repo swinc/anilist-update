@@ -1,31 +1,33 @@
-/* globals chrome, alert, fetch */
+import { updatePageLoginStatus } from './modules/update-page-login-status.js'
+import { loginToAnilist } from './modules/login-to-anilist.js'
+import { queryAnilist } from './modules/query-anilist.js'
 
-// if access token exists, show connected message
-function updateLoginDisplay () {
-  chrome.storage.sync.get('accessToken', function (result) {
-    if (result.accessToken) { // connected account
-      document.querySelector('#account-connected').classList.remove('hidden')
-      document.querySelector('#account-not-connected').classList.add('hidden')
-    } else {
-      document.querySelector('#account-not-connected').classList.remove('hidden')
-      document.querySelector('#account-connected').classList.add('hidden')
-    }
-  })
-}
+/* globals chrome */
 
-updateLoginDisplay()
+/*
+ * Set up page depending on status
+ */
+updatePageLoginStatus() // whether access token is set
 
+/*
+ * All click functionality (buttons and links)
+ */
+
+// === login button ===
+document.querySelector('#anilist-login-button').onclick = loginToAnilist
+
+// === logout link ===
 document.querySelector('#logout-link').onclick = function (element) {
   chrome.storage.sync.set({ accessToken: null }, function (result) {
-    console.log(result)
-    updateLoginDisplay()
+    updatePageLoginStatus()
   })
 }
 
-// test connection button
-const testConnButton = document.querySelector('#anilist-test-button')
-testConnButton.onclick = function (element) {
-  chrome.storage.sync.get('accessToken', (result) => {
+// === test login button ===
+const testLoginButton = document.querySelector('#anilist-test-button')
+testLoginButton.onclick = function (element) {
+  testLoginButton.innerHTML = 'Testing...'
+  chrome.storage.sync.get('accessToken', function (result) {
     var query = `
     mutation ($language: UserTitleLanguage) {
         UpdateUser (titleLanguage: $language) {
@@ -33,91 +35,30 @@ testConnButton.onclick = function (element) {
         }
     }
     `
-
     var variables = {
       language: 'ENGLISH'
     }
-
-    // Define the config we'll need for our Api request
-    var url = 'https://graphql.anilist.co'
-    var options = {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + result.accessToken,
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        query: query,
-        variables: variables
+    queryAnilist(query, variables, result.accessToken)
+      .then(function (result) {
+        document.querySelector('#test-connection-result').innerHTML =
+          '<p>Connection success!<br><code>' + JSON.stringify(result) + '</code></p>'
       })
-    }
-
-    // Make the HTTP Api request
-    fetch(url, options).then(handleResponse)
-      .then(handleData)
-      .catch(handleError)
-
-    function handleResponse (response) {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json)
+      .catch(function (err) {
+        document.querySelector('#test-connection-result').innerHTML =
+          '<p>Error!<br><code>' + JSON.stringify(err) + '</code></p>'
       })
-    }
-
-    function handleData (data) {
-      console.log(data)
-      document.querySelector('#test-connection-result').innerHTML =
-        'Success! Return value: <code>' + JSON.stringify(data) + '</code>'
-    }
-
-    function handleError (error) {
-      alert('Error, check console')
-      console.error(error)
-    }
+      .finally(function () {
+        testLoginButton.innerHTML = 'Test Connection'
+      })
   })
 }
 
-const loginLink = 'https://anilist.co/api/v2/oauth/authorize?client_id=4552&response_type=token'
-const loginButton = document.getElementById('anilist-login-button')
-
-loginButton.onclick = function (element) {
-  chrome.identity.launchWebAuthFlow(
-    { url: loginLink, interactive: true },
-    (responseURL) => {
-      // https://regex101.com/r/jDz0sC/1
-      const accessTokenRegEx = /access_token=(.+?)(&|$)/
-      const tokenTypeRegEx = /token_type=(.+?)(&|$)/
-      const expiresInRegEx = /expires_in=(.+?)(&|$)/
-
-      const accessToken = responseURL.match(accessTokenRegEx)[1] // first captured group
-      const tokenType = responseURL.match(tokenTypeRegEx)[1]
-      const expiresIn = responseURL.match(expiresInRegEx)[1]
-
-      // save auth
-      chrome.storage.sync.set({
-        authResponseURL: responseURL,
-        accessToken: accessToken,
-        tokenType: tokenType,
-        expiresIn: expiresIn
-      }, function () {
-        console.log('Anilist auth details saved.')
-        updateLoginDisplay()
-      })
-
-      // test
-      chrome.storage.sync.get('accessToken', (result) => { console.log(result) })
-    }
-  )
-}
-
-// ==============
-// unauth test
-// ==============
-const unauthSubmit = document.getElementById('unauth-media-submit')
-
-unauthSubmit.onclick = function (element) {
+// === test unauth'd API button ===
+document.querySelector('#unauth-media-submit').onclick = function (element) {
   element.preventDefault()
-  var mediaID = document.getElementById('unauth-media-id').value
+  document.querySelector('#unauth-media-submit').value = 'Pulling...'
+  var mediaID = document.querySelector('#unauth-media-id').value ||
+    document.querySelector('#unauth-media-id').placeholder
 
   var query = `
   query ($id: Int) { # Define which variables will be used in the query (id)
@@ -131,58 +72,31 @@ unauthSubmit.onclick = function (element) {
     }
   }
   `
-
   var variables = {
     id: mediaID
   }
-
-  // Define the config we'll need for our Api request
-  var url = 'https://graphql.anilist.co'
-  var options = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Accept: 'application/json'
-    },
-    body: JSON.stringify({
-      query: query,
-      variables: variables
+  queryAnilist(query, variables, null)
+    .then(function (result) {
+      document.querySelector('#unauth-media-result').innerHTML =
+        '<p>Media pulled!<br><code>' + JSON.stringify(result) + '</code></p>'
     })
-  }
-
-  // Make the HTTP Api request
-  fetch(url, options).then(handleResponse)
-    .then(handleData)
-    .catch(handleError)
-
-  function handleResponse (response) {
-    return response.json().then(function (json) {
-      return response.ok ? json : Promise.reject(json)
+    .catch(function (err) {
+      document.querySelector('#unauth-media-result').innerHTML =
+        '<p>Error!<br><code>' + JSON.stringify(err) + '</code></p>'
     })
-  }
-
-  function handleData (data) {
-    console.log(data)
-    document.getElementById('unauth-media-result').innerHTML = '<code>' + JSON.stringify(data) + '</code>'
-  }
-
-  function handleError (error) {
-    alert('Error, check console')
-    console.error(error)
-  }
+    .finally(function () {
+      document.querySelector('#unauth-media-submit').value = 'Pull Media'
+    })
 }
 
-// ==============
-// auth test
-// ==============
-const authSubmit = document.getElementById('auth-media-submit')
-
-authSubmit.onclick = function (element) {
+// === test auth'd API button ===
+document.querySelector('#auth-media-submit').onclick = function (element) {
   element.preventDefault()
-  var mediaID = document.getElementById('auth-media-id').value
-  chrome.storage.sync.get('accessToken', (result) => {
-    console.log('Got access token: ' + result.accessToken)
+  document.querySelector('#auth-media-submit').value = 'Saving...'
+  var mediaID = document.querySelector('#auth-media-id').value ||
+    document.querySelector('#auth-media-id').placeholder
 
+  chrome.storage.sync.get('accessToken', function (result) {
     var query = `
     mutation ($mediaId: Int, $status: MediaListStatus) {
         SaveMediaListEntry (mediaId: $mediaId, status: $status) {
@@ -191,47 +105,21 @@ authSubmit.onclick = function (element) {
         }
     }
     `
-
     var variables = {
       mediaId: mediaID,
       status: 'CURRENT'
     }
-
-    // Define the config we'll need for our Api request
-    var url = 'https://graphql.anilist.co'
-    var options = {
-      method: 'POST',
-      headers: {
-        Authorization: 'Bearer ' + result.accessToken,
-        'Content-Type': 'application/json',
-        Accept: 'application/json'
-      },
-      body: JSON.stringify({
-        query: query,
-        variables: variables
+    queryAnilist(query, variables, result.accessToken)
+      .then(function (result) {
+        document.querySelector('#auth-media-result').innerHTML =
+          '<p>Media saved!<br><code>' + JSON.stringify(result) + '</code></p>'
       })
-    }
-
-    // Make the HTTP Api request
-    fetch(url, options).then(handleResponse)
-      .then(handleData)
-      .catch(handleError)
-
-    function handleResponse (response) {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json)
+      .catch(function (err) {
+        document.querySelector('#auth-media-result').innerHTML =
+          '<p>Error!<br><code>' + JSON.stringify(err) + '</code></p>'
       })
-    }
-
-    function handleData (data) {
-      console.log(data)
-      document.querySelector('#auth-media-result').innerHTML =
-        '<code>' + JSON.stringify(data) + '</code>'
-    }
-
-    function handleError (error) {
-      alert('Error, check console')
-      console.error(error)
-    }
+      .finally(function () {
+        document.querySelector('#auth-media-submit').value = 'Save Media to Profile'
+      })
   })
 }
