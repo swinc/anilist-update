@@ -1,10 +1,27 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" href="popup.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600&display=swap"
+      rel="stylesheet">
+    <script src="popup.js"></script>
   </head>
   <body>
-    <p style="width: 100px">You're on an Anilist site!</p>
-    <button id="popup-button">Click me to use javascript</button>
-    <script src="popup.js"></script>
+    <h1 id="welcome-text">Hi <span id="user-name">[username]</span>!</h1>
+    <div id="sign-out-link">Sign Out</div>
+    <div id="content-id-header" class="u-bottom-margin">
+      You're watching <span id="series-name">[Series Name]</span>, Episode <span id="episode-num">[NUM]</span>.
+    </div>
+    <div class="u-bottom-margin">Log your progress on <a>Anilist</a>:</div>
+    <div id="content-block">
+      <img id="content-image" src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-m5ZMNtFioc7j.png">
+      <div id="content-ui">
+        <div id="content-name">Attack on Titan</div>
+        <div id="progress">1/25</div>
+        <button>+</button>
+        <button>-</button>
+      </div>
+    </div>
   </body>
 </html>

@@ -6,7 +6,7 @@
 var targetPagesRule = {
   conditions: [
     new chrome.declarativeContent.PageStateMatcher({
-      pageUrl: { hostContains: 'anilist.co' }
+      pageUrl: { hostContains: 'crunchyroll.com' }
     }),
     new chrome.declarativeContent.PageStateMatcher({
       pageUrl: { hostContains: 'netflix.com' }

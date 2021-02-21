@@ -1,0 +1,39 @@
+body {
+  border: 1px solid gray;
+  font-family: 'Overpass', sans-serif;
+  padding: 10px;
+  width: 400px;
+  font-size: 0.95rem;
+}
+
+#welcome-text {
+  font-size: 1.2rem;
+  display: inline-block;
+  width: 50%;
+}
+
+#sign-out-link {
+  display: inline-block;
+}
+
+#content-image {
+  width: 100px;
+  display: inline-block;
+}
+
+#content-ui {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#content-name {
+  vertical-align: top;
+}
+
+#progress {
+  display: inline-block;
+}
+
+.u-bottom-margin {
+  margin-bottom: 1rem;
+}
