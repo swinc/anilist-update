@@ -5,11 +5,20 @@
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@600&display=swap"
       rel="stylesheet">
-    <script src="popup.js"></script>
+    <script type="module" src="popup.js"></script>
   </head>
   <body>
-    <h1 id="welcome-text">Hi <span id="user-name">[username]</span>!</h1>
-    <div id="sign-out-link">Sign Out</div>
+    <!-- html for account not connected -->
+    <div id="account-not-connected" class="hidden">
+      <p>Your Anilist account is not connected.</p>
+      <p><button id="anilist-login-button">Login to Anilist.co</button></p>
+    </div>
+    <!-- end -->
+    <!-- html for account connected -->
+    <div id="account-connected" class="hidden">
+      <p>Hello <span class='username'>[username]</span>! <a id="logout-link" href="#">Log out.</a></p>
+    </div>
+    <!-- end -->
     <div id="content-id-header" class="u-bottom-margin">
       You're watching <span id="series-name">[Series Name]</span>, Episode <span id="episode-num">[NUM]</span>.
     </div>

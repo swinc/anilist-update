@@ -1,13 +1,13 @@
-import { updatePageLoginStatus } from './modules/update-page-login-status.js'
-import { loginToAnilist } from './modules/login-to-anilist.js'
-import { queryAnilist } from './modules/query-anilist.js'
+import { showLoginStatus } from './lib/show-login-status.js'
+import { loginToAnilist } from './lib/login-to-anilist.js'
+import { queryAnilist } from './lib/query-anilist.js'
 
 /* globals chrome */
 
 /*
  * Set up page depending on status
  */
-updatePageLoginStatus() // whether access token is set
+showLoginStatus() // whether access token is set
 
 /*
  * All click functionality (buttons and links)
@@ -19,7 +19,7 @@ document.querySelector('#anilist-login-button').onclick = loginToAnilist
 // === logout link ===
 document.querySelector('#logout-link').onclick = function (element) {
   chrome.storage.sync.set({ accessToken: null }, function (result) {
-    updatePageLoginStatus()
+    showLoginStatus()
   })
 }
 
