@@ -1,11 +1,17 @@
 /* globals alert */
 
-import { showConnectedAccount, showDisconnectedAccount, showUserName } from './lib/popup-ui.js'
+import {
+  showConnectedAccount,
+  showDisconnectedAccount,
+  showUserName,
+  showContentDetected,
+  showContentNotDetected
+} from './lib/popup-ui.js'
 import { loginToAnilist } from './lib/login-to-anilist.js'
 import { clickLoginButton, clickLogoutButton } from './lib/button-handlers.js'
 
 document.addEventListener('DOMContentLoaded', function() {
-  // account linkage
+  // show account
   chrome.storage.sync.get(['accessToken', 'userName'], function (storage) {
     if (storage.accessToken) { showConnectedAccount() }
     else { showDisconnectedAccount() }
@@ -16,6 +22,14 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#anilist-login-button').onclick = clickLoginButton
   document.querySelector('#logout-link').onclick = clickLogoutButton
 
-  // TODO: attempt to detect content on page
-  chrome.runtime.getBackgroundPage((window) => console.log(window.data))
+  // get web page data
+  chrome.runtime.getBackgroundPage((window) => {
+    console.log(window.contentScriptMessage)
+
+    if(window.contentScriptMessage && window.contentScriptMessage.detected) {
+      showContentDetected(window.contentScriptMessage.title, window.contentScriptMessage.episode)
+    } else {
+      showContentNotDetected()
+    }
+  })
 })

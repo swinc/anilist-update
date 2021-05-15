@@ -8,28 +8,37 @@
     <script type="module" src="popup.js"></script>
   </head>
   <body>
-    <!-- html for account not connected -->
+    <!-- account not connected -->
     <div id="account-not-connected" class="hidden">
       <p>Your Anilist account is not connected.</p>
       <p><button id="anilist-login-button">Login to Anilist.co</button></p>
     </div>
     <!-- end -->
-    <!-- html for account connected -->
+    <!-- account connected -->
     <div id="account-connected" class="hidden">
       <p>Hello <span class='username'>[username]</span>! <a id="logout-link" href="#">Log out.</a></p>
     </div>
     <!-- end -->
-    <div id="content-id-header" class="u-bottom-margin">
-      You're watching <span id="series-name">[Series Name]</span>, Episode <span id="episode-num">[NUM]</span>.
+    <!-- no content detected -->
+    <div id="content-not-detected" class="u-bottom-margin hidden">
+      No content detected.
     </div>
-    <div class="u-bottom-margin">Log your progress on <a>Anilist</a>:</div>
-    <div id="content-block">
-      <img id="content-image" src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-m5ZMNtFioc7j.png">
-      <div id="content-ui">
-        <div id="content-name">Attack on Titan</div>
-        <div id="progress">1/25</div>
-        <button>+</button>
-        <button>-</button>
+    <!-- end -->
+    <!-- content detected -->
+    <div id="content-detected" class="u-bottom-margin hidden">
+      You're watching <span id="title">[Series Name]</span>, Episode <span id="episode">[NUM]</span>.
+    </div>
+    <!-- end -->
+    <div id="content-ui-block" class="hidden">
+      <div class="u-bottom-margin">Log your progress on <a>Anilist</a>:</div>
+      <div id="content-block">
+        <img id="content-image" src="https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx16498-m5ZMNtFioc7j.png">
+        <div id="content-ui">
+          <div id="content-ui--title">Attack on Titan</div>
+          <div id="content-ui--progress">?/?</div>
+          <button>+</button>
+          <button>-</button>
+        </div>
       </div>
     </div>
   </body>

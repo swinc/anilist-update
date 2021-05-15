@@ -13,3 +13,10 @@ The extension (`background.js`) listens for messages by setting a listener with 
 The content script performs work on the page and passes messages to the extension (`background.js`) by use of `chrome.runtime.sendmessage()`. The background page receives the message and stores in on the global `windows` object.
 
 The popup script retrieves the global windows object with `chrome.runtime.getBackgroundPage()` and thereby accesses the message passed from the content script.
+
+## Content Script
+
+The contact script finds the title and episode of the content on the given page, and then passes this information to the background script as:
+```
+{ title: String, episode: int }
+```

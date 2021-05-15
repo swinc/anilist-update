@@ -1,6 +1,6 @@
-// try to pass message back to extension
+// content-script.js
 
+console.log('Anilist content script loaded...')
 
-console.log('Anlist content script!')
-
-chrome.runtime.sendMessage("a message from the content-script");
+// TODO: detect title and episode on page
+chrome.runtime.sendMessage({ detected: true, title: "Attack on Titan", episode: 75});

@@ -2,7 +2,7 @@
 
 /* globals chrome */
 
-window.data = {}  // global object
+window.contentScriptMessage = {}  // global object for storing content script message data
 
 // rule for when to display the extention's page action
 var targetPagesRule = {
@@ -29,4 +29,6 @@ chrome.runtime.onInstalled.addListener(function () {
   })
 })
 
-chrome.runtime.onMessage.addListener((msg) => window.data = msg);  // store message
+chrome.runtime.onMessage.addListener(
+  (payload) => window.contentScriptMessage = payload
+);  // store message
