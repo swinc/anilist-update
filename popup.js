@@ -3,7 +3,6 @@
 import { showConnectedAccount, showDisconnectedAccount, showUserName } from './lib/popup-ui.js'
 import { loginToAnilist } from './lib/login-to-anilist.js'
 import { clickLoginButton, clickLogoutButton } from './lib/button-handlers.js'
-import { updateUserName } from './lib/username.js'
 
 document.addEventListener('DOMContentLoaded', function() {
   // account linkage
@@ -18,4 +17,5 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#logout-link').onclick = clickLogoutButton
 
   // TODO: attempt to detect content on page
+  chrome.runtime.getBackgroundPage((window) => console.log(window.data))
 })

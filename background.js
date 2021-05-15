@@ -2,6 +2,8 @@
 
 /* globals chrome */
 
+window.data = {}  // global object
+
 // rule for when to display the extention's page action
 var targetPagesRule = {
   conditions: [
@@ -26,3 +28,5 @@ chrome.runtime.onInstalled.addListener(function () {
     chrome.declarativeContent.onPageChanged.addRules([targetPagesRule])
   })
 })
+
+chrome.runtime.onMessage.addListener((msg) => window.data = msg);  // store message
