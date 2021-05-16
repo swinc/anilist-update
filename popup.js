@@ -5,10 +5,15 @@ import {
   showDisconnectedAccount,
   showUserName,
   showContentDetected,
-  showContentNotDetected
+  showContentNotDetected,
+  showMediaTitle,
+  showMediaCoverImage,
+  showMediaEpisodes,
+  showUserProgress
 } from './lib/popup-ui.js'
 import { loginToAnilist } from './lib/login-to-anilist.js'
 import { clickLoginButton, clickLogoutButton } from './lib/button-handlers.js'
+import { querySearchMedia, queryUserProgress } from './lib/query-anilist.js'
 
 document.addEventListener('DOMContentLoaded', function() {
   // button handlers
@@ -26,15 +31,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
       if(window.contentScriptMessage && window.contentScriptMessage.detected) {
         showContentDetected(window.contentScriptMessage.title, window.contentScriptMessage.episode)
-        /*
         querySearchMedia(window.contentScriptMessage.title)
           .then((result) => {
-            showMediaTitle()
-            showMediaEpisodes()
-            queryUserProgress(mediaId, userName))
-              .then((result) => showUserProgress())
+            showMediaCoverImage(result.data.Media.coverImage.medium)
+            showMediaTitle(result.data.Media.title.english)
+            showMediaEpisodes(result.data.Media.episodes)
+            queryUserProgress(result.data.Media.id, storage.userName)
+              .then((result) => showUserProgress(result.data.MediaList.progress))
           })
-        */
       } else {
         showContentNotDetected()
       }
