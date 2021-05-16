@@ -44,30 +44,36 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // show page info
   chrome.storage.sync.get(['accessToken', 'userName'], function (storage) {
-    if (storage.accessToken) { showConnectedAccount() }
-    else { showDisconnectedAccount() }
-    showUserName(storage.userName)
-    // get web page data
-    chrome.runtime.getBackgroundPage((window) => {
-      console.log(window.contentScriptMessage)
+    if (storage.accessToken) {
+      showConnectedAccount()
+      showUserName(storage.userName)
 
-      if(window.contentScriptMessage && window.contentScriptMessage.detected) {
-        showContentDetected(window.contentScriptMessage.title, window.contentScriptMessage.episode)
-        prepopSearchBox(window.contentScriptMessage.title)
-        querySearchMedia(window.contentScriptMessage.title)
-          .then((result) => {
-            showMediaCoverImage(result.data.Media.coverImage.medium)
-            showMediaTitle(result.data.Media.title.english)
-            updateTitleLink(result.data.Media.id)
-            queryUserMediaNotes(result.data.Media.id, storage.userName)
-              .then((result) => {
-                showUserProgress(result.data.MediaList.progress)
-                showUserScore(result.data.MediaList.score)
-              })
-          })
-      } else {
-        showContentNotDetected()
-      }
-    })
+      // get web page data
+      chrome.runtime.getBackgroundPage((window) => {
+        console.log(window.contentScriptMessage)
+
+        if(window.contentScriptMessage && window.contentScriptMessage.detected) {
+          showContentDetected(window.contentScriptMessage.title, window.contentScriptMessage.episode)
+          prepopSearchBox(window.contentScriptMessage.title)
+          querySearchMedia(window.contentScriptMessage.title)
+            .then((result) => {
+              showMediaCoverImage(result.data.Media.coverImage.medium)
+              showMediaTitle(result.data.Media.title.english)
+              updateTitleLink(result.data.Media.id)
+              queryUserMediaNotes(result.data.Media.id, storage.userName)
+                .then((result) => {
+                  showUserProgress(result.data.MediaList.progress)
+                  showUserScore(result.data.MediaList.score)
+                })
+                .catch((error) => console.log(error))
+            })
+        } else {
+          showContentNotDetected()
+        }
+      })
+    }
+    else {
+      showDisconnectedAccount()
+    }
   })
 })
