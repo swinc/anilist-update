@@ -30,5 +30,5 @@ chrome.runtime.onInstalled.addListener(function () {
 })
 
 chrome.runtime.onMessage.addListener(
-  (payload) => window.contentScriptMessage = payload
-);  // store message
+  (payload) => window.contentScriptMessage = payload  // store message
+);
