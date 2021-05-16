@@ -35,13 +35,16 @@
         <img id="content-ui--image" width="100" src="">
         <div id="content-ui">
           <div id="content-ui--title"></div>
+          <div id="content-ui--total-episodes">Total Episodes: <span id="total-episodes"></span></div>
           <div id="content-ui--progress">
-            <span id="content-ui--episode-progress">?</span>
-            /
-            <span id="content-ui--total-episodes">?</span>
+            Episode Progress
+            <input type="number" id="episode-progress" name="Episode Progress" min="0" max="">
           </div>
-          <button>-</button>
-          <button>+</button>
+          <div id="content-ui--score">
+            Score
+            <input type="number" id="score" name="Score" min="0" max="100">
+          </div>
+          <button>Update</button>
         </div>
       </div>
     </div>

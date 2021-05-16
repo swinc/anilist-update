@@ -9,11 +9,12 @@ import {
   showMediaTitle,
   showMediaCoverImage,
   showMediaEpisodes,
-  showUserProgress
+  showUserProgress,
+  showUserScore
 } from './lib/popup-ui.js'
 import { loginToAnilist } from './lib/login-to-anilist.js'
 import { clickLoginButton, clickLogoutButton } from './lib/button-handlers.js'
-import { querySearchMedia, queryUserProgress } from './lib/query-anilist.js'
+import { querySearchMedia, queryUserMediaNotes } from './lib/query-anilist.js'
 
 document.addEventListener('DOMContentLoaded', function() {
   // button handlers
@@ -36,8 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
             showMediaCoverImage(result.data.Media.coverImage.medium)
             showMediaTitle(result.data.Media.title.english)
             showMediaEpisodes(result.data.Media.episodes)
-            queryUserProgress(result.data.Media.id, storage.userName)
-              .then((result) => showUserProgress(result.data.MediaList.progress))
+            queryUserMediaNotes(result.data.Media.id, storage.userName)
+              .then((result) => {
+                showUserProgress(result.data.MediaList.progress)
+                showUserScore(result.data.MediaList.score)
+              })
           })
       } else {
         showContentNotDetected()
