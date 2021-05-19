@@ -1,11 +1,9 @@
-'use strict'
-
 /* globals chrome */
 
-window.contentScriptMessage = {}  // global object for storing content script message data
+window.anilistData = {}  // global object for storing content script message data
 
-// rule for when to display the extention's page action
-var targetPagesRule = {
+// set rule and listener for extension page action
+const targetPagesRule = {
   conditions: [
     new chrome.declarativeContent.PageStateMatcher({
       pageUrl: { hostContains: 'crunchyroll.com' }
@@ -19,16 +17,19 @@ var targetPagesRule = {
   ],
   actions: [new chrome.declarativeContent.ShowPageAction()]
 }
-
-/* add a listener for the onPageChanged event and when the page is changed, use the
- * "targetPage" rule above
-*/
 chrome.runtime.onInstalled.addListener(function () {
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
     chrome.declarativeContent.onPageChanged.addRules([targetPagesRule])
   })
 })
 
+// store user data on page if available
+chrome.storage.sync.get(['accessToken', 'userName'], function (storage) {
+  window.anilistData.accessToken = storage.accessToken
+  window.anilistData.userName = storage.userName
+})
+
+// listen for content script message
 chrome.runtime.onMessage.addListener(
-  (payload) => window.contentScriptMessage = payload  // store message
+  (payload) => window.anilistData.contentScriptMessage = payload  // store message
 );
