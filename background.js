@@ -1,6 +1,6 @@
 /* globals chrome */
 
-window.anilistData = {}  // global object for storing content script message data
+window.contentData = {}  // global object for storing content data
 
 // set rule and listener for extension page action
 const targetPagesRule = {
@@ -23,13 +23,7 @@ chrome.runtime.onInstalled.addListener(function () {
   })
 })
 
-// store user data on page if available
-chrome.storage.sync.get(['accessToken', 'userName'], function (storage) {
-  window.anilistData.accessToken = storage.accessToken
-  window.anilistData.userName = storage.userName
-})
-
 // listen for content script message
 chrome.runtime.onMessage.addListener(
-  (payload) => window.anilistData.contentScriptMessage = payload  // store message
+  (payload) => window.contentData = payload  // store message
 );

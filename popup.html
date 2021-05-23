@@ -8,46 +8,8 @@
     <script type="module" src="popup.js"></script>
   </head>
   <body>
-    <!-- account not connected -->
-    <div id="account-not-connected" class="hidden">
-      <p>Your Anilist account is not connected.</p>
-      <p><button id="anilist-login-button">Login to Anilist.co</button></p>
-    </div>
-    <!-- end -->
-    <!-- account connected -->
-    <div id="account-connected" class="hidden">
-      <p>Hello <span class='username'>[username]</span>! <a id="logout-link" href="#">Log out.</a></p>
-    </div>
-    <!-- end -->
-    <!-- no content detected -->
-    <div id="content-not-detected" class="u-bottom-margin hidden">
-      No content detected.
-    </div>
-    <!-- end -->
-    <!-- content detected -->
-    <div id="content-detected" class="u-bottom-margin hidden">
-      You're watching <span id="title">[Series Name]</span>.
-    </div>
-    <!-- end -->
-    <div id="content-ui-block" class="hidden">
-      <div class="u-bottom-margin">Search Anilist: <input id="search-box" type="text"></div>
-      <div>Closest match:<div>
-      <div id="content-block">
-        <img id="content-ui--image" width="100" src="">
-        <div id="content-ui">
-          <div id="content-ui--title"><a id="title-link" href=""></a></div>
-          <div id="content-ui--total-episodes">Total Episodes: <span id="total-episodes"></span></div>
-          <div id="content-ui--progress">
-            Episode Progress
-            <input type="number" id="episode-progress" name="Episode Progress" min="0" max="">
-          </div>
-          <div id="content-ui--score">
-            Score
-            <input type="number" id="score" name="Score" min="0" max="100">
-          </div>
-          <button id="update-button">Update</button>
-        </div>
-      </div>
-    </div>
+    <div id="user-welcome"></div>
+    <div id="content-detection"></div>
+    <div id="anilist-match"></div>
   </body>
 </html>
