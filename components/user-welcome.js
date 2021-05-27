@@ -1,4 +1,4 @@
-/* globals alert, chrome */
+/* globals chrome */
 
 import { loginToAnilist } from '../lib/login-to-anilist.js'
 import { renderPopup } from '../popup.js'
@@ -26,13 +26,16 @@ export function renderUserWelcome (state) {
     loginButton.onclick = function () {
       loginButton.innerHTML = 'Opening login window...'
       loginToAnilist()
-        .then(() => alert('Successfully authenticated to Anilist.co.'))
+        .then(async () => {
+          await renderPopup()
+        })
         .catch(console.error)
     }
   }
   const logoutLink = document.querySelector('#logout-link')
   if (logoutLink) {
     logoutLink.onclick = function () {
+      chrome.identity.clearAllCachedAuthTokens(() => {})
       chrome.storage.sync.clear(async () => await renderPopup())
     }
   }
