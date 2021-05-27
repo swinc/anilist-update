@@ -1,4 +1,6 @@
-import { querySearchMedia, queryUserMediaNotes } from './lib/query-anilist.js'
+/* globals chrome */
+
+import { querySearchMedia, queryUserMediaNotes, queryUserData } from './lib/query-anilist.js'
 import { getUserData } from './lib/user-data.js'
 import { getContentData } from './lib/content-data.js'
 import { renderUserWelcome } from './components/user-welcome.js'
@@ -8,7 +10,23 @@ import { renderAnilistMatch } from './components/anilist-match.js'
 export async function renderPopup () {
   // TODO: display loading block
 
-  const userData = await getUserData()
+  let userData = await getUserData()
+  if (userData && userData.accessToken && !userData.userName) {
+    const remainingUserData = await queryUserData(userData.accessToken)
+    chrome.storage.sync.set({
+      userId: remainingUserData.data.Viewer.id,
+      userName: remainingUserData.data.Viewer.name,
+      userSiteUrl: remainingUserData.data.Viewer.siteUrl
+    })
+    userData = {
+      ...userData,
+      userId: remainingUserData.data.Viewer.id,
+      userName: remainingUserData.data.Viewer.name,
+      userSiteUrl: remainingUserData.data.Viewer.siteUrl
+    }
+    console.log('new user data', userData)
+  }
+
   const contentData = await getContentData()
 
   let mediaData = null
