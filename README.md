@@ -2,7 +2,15 @@
 
 This is a Chrome extension for automatically updating your [Anilist.co](https://anilist.co/) profile when you have completed watching a media item.
 
-## Structure
+## Download and Test
+
+1. Download the repository (click "Code" -> "Download ZIP").
+2. From Chrome -> Manage Extensions, click "Load unpacked" and select the directory of this repository on your local machine.
+3. Navigate to a supported anime site (e.g., crunchyroll.com) and test.
+
+## Development Details
+
+### High-Level Extension Structure
 
 `background.js` runs on extension activation and calls `chrome.declarativeContent.ShowPageAction()` when specific websites are visited. `ShowPageAction()` displays `popup.html` and the corresponding .js and .css files.
 
@@ -13,10 +21,3 @@ The extension (`background.js`) listens for messages by setting a listener with 
 The content script performs work on the page and passes messages to the extension (`background.js`) by use of `chrome.runtime.sendmessage()`. The background page receives the message and stores in on the global `windows` object.
 
 The popup script retrieves the global windows object with `chrome.runtime.getBackgroundPage()` and thereby accesses the message passed from the content script.
-
-## Content Script
-
-The contact script finds the title and episode of the content on the given page, and then passes this information to the background script as:
-```
-{ title: String, episode: int }
-```
