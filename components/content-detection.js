@@ -12,7 +12,7 @@ function composeContentDetection (state) {
       <p>No content detected.<p>
       <p>Search Anilist: <input id="search-box" type="text" value=""></p>
     `
-  } else {
+  } else { // we have user data and content data
     return `
       <p>You're watching ${state.contentData.title}.</p>
       <p>Search Anilist: <input id="search-box" type="text" value="${state.contentData.title}"></p>

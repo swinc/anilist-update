@@ -1,6 +1,6 @@
-/* globals chrome */
+/* globals chrome, window */
 
-window.contentData = {}  // global object for storing content data
+window.contentData = {} // global object for storing content data
 
 // set rule and listener for extension page action
 const targetPagesRule = {
@@ -25,5 +25,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
 // listen for content script message
 chrome.runtime.onMessage.addListener(
-  (payload) => window.contentData = payload  // store message
-);
+  function (payload) {
+    window.contentData = payload // store message
+  }
+)

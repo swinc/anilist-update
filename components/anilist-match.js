@@ -34,11 +34,11 @@ function composeAnilistMatch (state) {
         </div>
       </div>
     `
-  } else if (state && state.userContentData.data.MediaList == null) {
+  } else if (state && state.userContentData && state.userContentData.data.MediaList == null) {
     return `
       <p>This title is not on your list.</p>
     `
-  } else {
+  } else { // no mediaData or no userContentData
     return ''
   }
 }
@@ -48,17 +48,19 @@ export function renderAnilistMatch (state) {
   document.querySelector('#anilist-match').innerHTML = contentDetectionHtml
 
   const updateButton = document.querySelector('#update-button')
-  updateButton.onclick = function () {
-    updateButton.innerHTML = 'Updating...'
+  if (updateButton) {
+    updateButton.onclick = function () {
+      updateButton.innerHTML = 'Updating...'
 
-    const episodeProgress = document.querySelector('#episode-progress').value
-    const userScore = document.querySelector('#score').value
-    const mediaId = state.mediaData.data.Media.id
-    const accessToken = state.userData.accessToken
-    updateUserMediaNotes(mediaId, episodeProgress, userScore, accessToken)
-      .then(() => {
-        updateButton.innerHTML = 'Update'
-        document.querySelector('#update-message').innerHTML = 'Updated!'
-      })
+      const episodeProgress = document.querySelector('#episode-progress').value
+      const userScore = document.querySelector('#score').value
+      const mediaId = state.mediaData.data.Media.id
+      const accessToken = state.userData.accessToken
+      updateUserMediaNotes(mediaId, episodeProgress, userScore, accessToken)
+        .then(() => {
+          updateButton.innerHTML = 'Update'
+          document.querySelector('#update-message').innerHTML = 'Updated!'
+        })
+    }
   }
 }
