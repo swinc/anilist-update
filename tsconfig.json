@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "outDir": "./app/js",
+    "sourceMap": false,
+    "noImplicitAny": false,
+    "module": "es2020",
+    "moduleResolution": "node",
+    "target": "es2020",
+    "allowJs": true,
+    "checkJs": false,
+    "lib": ["DOM", "ES6"],
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

@@ -1,4 +1,4 @@
-import { updateUserMediaNotes } from '../lib/query-anilist.js'
+import { updateUserMediaNotes } from '../query-anilist.js'
 
 function composeAnilistMatch (state) {
   if (state && state.mediaData && state.userContentData && state.userContentData.data.MediaList) {

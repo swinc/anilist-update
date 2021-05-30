@@ -1,7 +1,7 @@
 /* globals chrome */
 
-import { loginToAnilist } from '../lib/login-to-anilist.js'
-import { renderPopup } from '../popup.js'
+import { loginToAnilist } from '../login-to-anilist.js'
+import { renderPopup } from '../../popup.js'
 
 function composeUserWelcome (state) {
   if (state.userData && state.userData.accessToken && state.userData.userName) {
