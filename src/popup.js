@@ -3,9 +3,9 @@
 import { querySearchMedia, queryUserMediaNotes, queryUserData } from './lib/query-anilist.js'
 import { getUserData } from './lib/user-data.js'
 import { getContentData } from './lib/content-data.js'
-import { renderUserWelcome } from './components/user-welcome.js'
-import { renderContentDetection } from './components/content-detection.js'
-import { renderAnilistMatch } from './components/anilist-match.js'
+import { renderUserWelcome } from './lib/components/user-welcome.js'
+import { renderContentDetection } from './lib/components/content-detection.js'
+import { renderAnilistMatch } from './lib/components/anilist-match.js'
 
 export async function renderPopup () {
   // TODO: display loading block

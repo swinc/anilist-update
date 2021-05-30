@@ -1,7 +1,5 @@
 /* globals chrome, window */
 
-window.contentData = {} // global object for storing content data
-
 // set rule and listener for extension page action
 const targetPagesRule = {
   conditions: [
