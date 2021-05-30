@@ -5,7 +5,7 @@ This is a Chrome extension for automatically updating your [Anilist.co](https://
 ## Download and Test
 
 1. Download the repository (click "Code" -> "Download ZIP").
-2. From Chrome -> Manage Extensions, click "Load unpacked" and select the directory of this repository on your local machine.
+2. From Chrome -> Manage Extensions, click "Load unpacked" and **select the "app" directory** of this repository on your local machine.
 3. Navigate to a supported anime site (e.g., crunchyroll.com) and test.
 
 ## Development Details
