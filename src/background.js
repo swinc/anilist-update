@@ -1,4 +1,4 @@
-/* globals chrome, window */
+/* globals chrome */
 
 // set rule and listener for extension page action
 const targetPagesRule = {
@@ -20,10 +20,3 @@ chrome.runtime.onInstalled.addListener(function () {
     chrome.declarativeContent.onPageChanged.addRules([targetPagesRule])
   })
 })
-
-// listen for content script message
-chrome.runtime.onMessage.addListener(
-  function (payload) {
-    window.contentData = payload // store message
-  }
-)

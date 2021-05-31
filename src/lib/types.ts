@@ -1,9 +1,9 @@
 export interface AppState {
   searchBoxText: string,
   userData: UserData,
-  contentData: ContentData,
+  contentTitle: contentTitle,
   mediaData: MediaData,
-  userContentData: UserContentData
+  usercontentTitle: UsercontentTitle
 }
 
 interface UserData {
@@ -13,7 +13,7 @@ interface UserData {
   userSiteUrl: string
 }
 
-interface ContentData {
+interface contentTitle {
   detected: boolean,
   title: string
 }
@@ -22,10 +22,10 @@ interface MediaData {
 
 }
 
-interface UserContentData {
+interface UsercontentTitle {
 
 }
 
 export interface BackgroundWindow extends Window {
-  contentData?: ContentData
+  contentTitle?: contentTitle
 }

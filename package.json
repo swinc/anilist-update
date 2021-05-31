@@ -21,11 +21,9 @@
     "url": "https://github.com/swinc/anilist-update/issues"
   },
   "homepage": "https://github.com/swinc/anilist-update#readme",
-  "dependencies": {
-    "lodash": "^4.17.21"
-  },
   "devDependencies": {
     "@types/chrome": "^0.0.143",
+    "ts-standard": "^10.0.0",
     "typescript": "^4.3.2"
   }
 }

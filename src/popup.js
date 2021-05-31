@@ -2,7 +2,7 @@
 
 import { querySearchMedia, queryUserMediaNotes, queryUserData } from './lib/query-anilist.js'
 import { getUserData } from './lib/user-data.js'
-import { getContentData } from './lib/content-data.js'
+import { getContentTitle } from './lib/content-data.js'
 import { renderUserWelcome } from './lib/components/user-welcome.js'
 import { renderContentDetection } from './lib/components/content-detection.js'
 import { renderAnilistMatch } from './lib/components/anilist-match.js'
@@ -27,26 +27,26 @@ export async function renderPopup () {
     console.log('new user data', userData)
   }
 
-  const contentData = await getContentData()
+  const contentTitle = await getContentTitle()
 
   let mediaData = null
-  let userContentData = null
-  if (contentData && contentData.detected && userData && userData.userName) {
-    mediaData = await querySearchMedia(contentData.title)
-    userContentData = await queryUserMediaNotes(mediaData.data.Media.id, userData.userName)
+  let usercontentTitle = null
+  if (contentTitle && userData && userData.userName) {
+    mediaData = await querySearchMedia(contentTitle)
+    usercontentTitle = await queryUserMediaNotes(mediaData.data.Media.id, userData.userName)
   }
 
   console.log('userData:', userData)
-  console.log('contentData:', contentData)
+  console.log('contentTitle:', contentTitle)
   console.log('mediaData:', mediaData)
-  console.log('userContentData:', userContentData)
+  console.log('usercontentTitle:', usercontentTitle)
 
   const state = {
     searchBoxText: '',
     userData: userData,
-    contentData: contentData,
+    contentTitle: contentTitle,
     mediaData: mediaData,
-    userContentData: userContentData
+    usercontentTitle: usercontentTitle
   }
 
   renderUserWelcome(state)

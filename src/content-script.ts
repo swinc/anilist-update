@@ -12,5 +12,8 @@ if (matchesMediaTitle) {
   contentTitle = matchesMediaTitle[1]
 }
 
-// report to extension
-chrome.runtime.sendMessage({ detected: !!matchesMediaTitle, title: contentTitle })
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+  if (message === 'get-media-title') {
+    sendResponse(contentTitle)
+  }
+})

@@ -7,15 +7,15 @@ function composeContentDetection (state) {
     return ''
   } else if (!state.userData || !state.userData.userName) { // no user data
     return ''
-  } else if (!state.contentData || !state.contentData.detected) { // user data but no content data
+  } else if (!state.contentTitle) { // user data but no content data
     return `
       <p>No content detected.<p>
       <p>Search Anilist: <input id="search-box" type="text" value=""></p>
     `
   } else { // we have user data and content data
     return `
-      <p>You're watching ${state.contentData.title}.</p>
-      <p>Search Anilist: <input id="search-box" type="text" value="${state.contentData.title}"></p>
+      <p>You're watching ${state.contentTitle}.</p>
+      <p>Search Anilist: <input id="search-box" type="text" value="${state.contentTitle}"></p>
     `
   }
 }
@@ -31,11 +31,11 @@ export function renderContentDetection (state) {
         const contentTitle = document.querySelector('#search-box').value
         const mediaData = await querySearchMedia(contentTitle)
         const userName = state.userData.userName
-        const userContentData = await queryUserMediaNotes(mediaData.data.Media.id, userName)
+        const usercontentTitle = await queryUserMediaNotes(mediaData.data.Media.id, userName)
         renderAnilistMatch({
           userData: state.userData,
           mediaData: mediaData,
-          userContentData: userContentData
+          usercontentTitle: usercontentTitle
         })
       }
     }
