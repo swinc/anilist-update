@@ -54,3 +54,4 @@ export function updateTitleLink(id) {
 export function prepopSearchBox(searchString) {
     document.querySelector('#search-box').value = searchString;
 }
+//# sourceMappingURL=popup-ui.js.map

@@ -21,7 +21,7 @@ export function renderUserWelcome (state) {
   const userWelcomeHtml = composeUserWelcome(state)
   document.querySelector('#user-welcome').innerHTML = userWelcomeHtml
 
-  const loginButton = document.querySelector('#anilist-login-button')
+  const loginButton: HTMLButtonElement = document.querySelector('#anilist-login-button')
   if (loginButton) { // if rendered
     loginButton.onclick = function () {
       loginButton.innerHTML = 'Opening login window...'
@@ -32,7 +32,7 @@ export function renderUserWelcome (state) {
         .catch(console.error)
     }
   }
-  const logoutLink = document.querySelector('#logout-link')
+  const logoutLink: HTMLAnchorElement = document.querySelector('#logout-link')
   if (logoutLink) {
     logoutLink.onclick = function () {
       chrome.identity.clearAllCachedAuthTokens(() => {})

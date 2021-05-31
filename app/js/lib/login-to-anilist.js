@@ -1,4 +1,3 @@
-/* globals chrome */
 /**
  *  Returns promise which resolves with true on success / completion
 */
@@ -43,3 +42,4 @@ function launchAnilistWebAuth() {
         });
     });
 }
+//# sourceMappingURL=login-to-anilist.js.map

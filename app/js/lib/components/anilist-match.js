@@ -62,3 +62,4 @@ export function renderAnilistMatch(state) {
         };
     }
 }
+//# sourceMappingURL=anilist-match.js.map

@@ -19,3 +19,4 @@ chrome.runtime.onInstalled.addListener(function () {
         chrome.declarativeContent.onPageChanged.addRules([targetPagesRule]);
     });
 });
+//# sourceMappingURL=background.js.map

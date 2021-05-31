@@ -25,5 +25,8 @@
     "@types/chrome": "^0.0.143",
     "ts-standard": "^10.0.0",
     "typescript": "^4.3.2"
+  },
+  "ts-standard": {
+    "project": "./tsconfig.json"
   }
 }

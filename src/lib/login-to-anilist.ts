@@ -1,9 +1,14 @@
-/* globals chrome */
+interface authData {
+  responseUrl: string,
+  accessToken: string,
+  tokenType: string,
+  expiresIn: string
+}
 
 /**
  *  Returns promise which resolves with true on success / completion
 */
-export function loginToAnilist () {
+export function loginToAnilist (): Promise<boolean|Error> {
   return new Promise((resolve, reject) => {
     launchAnilistWebAuth()
       .then((authResponse) => {
@@ -19,7 +24,7 @@ export function loginToAnilist () {
   })
 }
 
-function launchAnilistWebAuth () {
+function launchAnilistWebAuth (): Promise<authData> {
   const loginLink = 'https://anilist.co/api/v2/oauth/authorize?client_id=4552&response_type=token'
   console.log('loginLink', loginLink)
 

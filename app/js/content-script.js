@@ -13,3 +13,4 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
         sendResponse(contentTitle);
     }
 });
+//# sourceMappingURL=content-script.js.map

@@ -37,3 +37,4 @@ export function renderUserWelcome(state) {
         };
     }
 }
+//# sourceMappingURL=user-welcome.js.map

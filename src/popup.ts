@@ -2,7 +2,7 @@
 
 import { querySearchMedia, queryUserMediaNotes, queryUserData } from './lib/query-anilist.js'
 import { getUserData } from './lib/user-data.js'
-import { getContentTitle } from './lib/content-data.js'
+import { getContentTitle } from './lib/get-content-title.js'
 import { renderUserWelcome } from './lib/components/user-welcome.js'
 import { renderContentDetection } from './lib/components/content-detection.js'
 import { renderAnilistMatch } from './lib/components/anilist-match.js'

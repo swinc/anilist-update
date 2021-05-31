@@ -117,3 +117,4 @@ export function queryUserData(accessToken) {
             .catch((error) => reject(error));
     });
 }
+//# sourceMappingURL=query-anilist.js.map
