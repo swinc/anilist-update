@@ -1,46 +1,30 @@
 /* globals chrome */
+import { getStoredAccessToken } from './lib/get-stored-access-token.js';
 import { querySearchMedia, queryUserMediaNotes, queryUserData } from './lib/query-anilist.js';
-import { getUserData } from './lib/user-data.js';
-import { getContentData } from './lib/content-data.js';
+import { getMediaTitle } from './lib/get-media-title.js';
 import { renderUserWelcome } from './lib/components/user-welcome.js';
 import { renderContentDetection } from './lib/components/content-detection.js';
 import { renderAnilistMatch } from './lib/components/anilist-match.js';
 export async function renderPopup() {
     // TODO: display loading block
-    let userData = await getUserData();
-    if (userData && userData.accessToken && !userData.userName) {
-        const remainingUserData = await queryUserData(userData.accessToken);
-        chrome.storage.sync.set({
-            userId: remainingUserData.data.Viewer.id,
-            userName: remainingUserData.data.Viewer.name,
-            userSiteUrl: remainingUserData.data.Viewer.siteUrl
-        });
-        userData = {
-            ...userData,
-            userId: remainingUserData.data.Viewer.id,
-            userName: remainingUserData.data.Viewer.name,
-            userSiteUrl: remainingUserData.data.Viewer.siteUrl
-        };
-        console.log('new user data', userData);
-    }
-    const contentData = await getContentData();
+    const accessToken = await getStoredAccessToken();
+    const userData = await queryUserData(accessToken);
+    const mediaTitle = await getMediaTitle();
     let mediaData = null;
-    let userContentData = null;
-    if (contentData && contentData.detected && userData && userData.userName) {
-        mediaData = await querySearchMedia(contentData.title);
-        userContentData = await queryUserMediaNotes(mediaData.data.Media.id, userData.userName);
+    let userMediaListData = null;
+    if (mediaTitle) {
+        mediaData = await querySearchMedia(mediaTitle);
+        userMediaListData = await queryUserMediaNotes(mediaData.data.Media.id, userData.data.Viewer.name);
     }
-    console.log('userData:', userData);
-    console.log('contentData:', contentData);
-    console.log('mediaData:', mediaData);
-    console.log('userContentData:', userContentData);
     const state = {
+        accessToken: accessToken,
+        mediaSearchData: mediaData,
+        mediaTitle: mediaTitle,
         searchBoxText: '',
         userData: userData,
-        contentData: contentData,
-        mediaData: mediaData,
-        userContentData: userContentData
+        userMediaListData: userMediaListData
     };
+    console.log('AppState:', state);
     renderUserWelcome(state);
     renderContentDetection(state);
     renderAnilistMatch(state);
@@ -48,3 +32,4 @@ export async function renderPopup() {
 document.addEventListener('DOMContentLoaded', async function () {
     await renderPopup();
 });
+//# sourceMappingURL=popup.js.map

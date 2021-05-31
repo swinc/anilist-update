@@ -2,11 +2,12 @@
 
 import { loginToAnilist } from '../login-to-anilist.js'
 import { renderPopup } from '../../popup.js'
+import { AppState } from '../types'
 
-function composeUserWelcome (state) {
-  if (state.userData && state.userData.accessToken && state.userData.userName) {
+function composeUserWelcome (state: AppState) {
+  if (state.userData && state.accessToken && state.userData.data.Viewer.name) {
     return `
-      <p>Hello <span class='username'>${state.userData.userName}</span>!
+      <p>Hello <span class='username'>${state.userData.data.Viewer.name}</span>!
       <a id="logout-link" href="#">Log out</a></p>
     `
   } else {
@@ -17,11 +18,11 @@ function composeUserWelcome (state) {
   }
 }
 
-export function renderUserWelcome (state) {
+export function renderUserWelcome (state: AppState) {
   const userWelcomeHtml = composeUserWelcome(state)
   document.querySelector('#user-welcome').innerHTML = userWelcomeHtml
 
-  const loginButton = document.querySelector('#anilist-login-button')
+  const loginButton: HTMLButtonElement = document.querySelector('#anilist-login-button')
   if (loginButton) { // if rendered
     loginButton.onclick = function () {
       loginButton.innerHTML = 'Opening login window...'
@@ -32,7 +33,7 @@ export function renderUserWelcome (state) {
         .catch(console.error)
     }
   }
-  const logoutLink = document.querySelector('#logout-link')
+  const logoutLink: HTMLAnchorElement = document.querySelector('#logout-link')
   if (logoutLink) {
     logoutLink.onclick = function () {
       chrome.identity.clearAllCachedAuthTokens(() => {})

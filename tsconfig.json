@@ -1,14 +1,13 @@
 {
   "compilerOptions": {
     "outDir": "./app/js",
-    "sourceMap": false,
-    "noImplicitAny": false,
+    "sourceMap": true,
+    "noImplicitAny": true,
     "module": "es2020",
     "moduleResolution": "node",
     "target": "es2020",
-    "allowJs": true,
-    "checkJs": false,
-    "lib": ["DOM", "ES6"],
+    "allowJs": false,
+    "lib": ["DOM", "ES2018"],
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules"]

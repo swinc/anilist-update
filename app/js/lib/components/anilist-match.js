@@ -1,13 +1,13 @@
 import { updateUserMediaNotes } from '../query-anilist.js';
 function composeAnilistMatch(state) {
-    if (state && state.mediaData && state.userContentData && state.userContentData.data.MediaList) {
-        const title = state.mediaData.data.Media.title.english;
-        const imageUrl = state.mediaData.data.Media.coverImage.medium;
-        const mediaId = state.mediaData.data.Media.id;
+    if (state?.mediaSearchData && state.userMediaListData?.data.MediaList) {
+        const title = state.mediaSearchData.data.Media.title.english;
+        const imageUrl = state.mediaSearchData.data.Media.coverImage.medium;
+        const mediaId = state.mediaSearchData.data.Media.id;
         const mediaUrl = 'https://anilist.co/anime/' + mediaId;
-        const episodes = state.mediaData.data.Media.episodes;
-        const userProgress = state.userContentData.data.MediaList.progress;
-        const userScore = state.userContentData.data.MediaList.score;
+        const episodes = state.mediaSearchData.data.Media.episodes;
+        const userProgress = state.userMediaListData.data.MediaList.progress;
+        const userScore = state.userMediaListData.data.MediaList.score;
         return `
       <p>Closest match:</p>
       <div id="content-block">
@@ -34,12 +34,12 @@ function composeAnilistMatch(state) {
       </div>
     `;
     }
-    else if (state && state.userContentData && state.userContentData.data.MediaList == null) {
+    else if (state?.userMediaListData?.data?.MediaList == null) {
         return `
       <p>This title is not on your list.</p>
     `;
     }
-    else { // no mediaData or no userContentData
+    else { // no mediaData or no MediaListData
         return '';
     }
 }
@@ -52,9 +52,8 @@ export function renderAnilistMatch(state) {
             updateButton.innerHTML = 'Updating...';
             const episodeProgress = document.querySelector('#episode-progress').value;
             const userScore = document.querySelector('#score').value;
-            const mediaId = state.mediaData.data.Media.id;
-            const accessToken = state.userData.accessToken;
-            updateUserMediaNotes(mediaId, episodeProgress, userScore, accessToken)
+            const mediaId = state.mediaSearchData.data.Media.id;
+            updateUserMediaNotes(mediaId, parseInt(episodeProgress), parseInt(userScore), state.accessToken)
                 .then(() => {
                 updateButton.innerHTML = 'Update';
                 document.querySelector('#update-message').innerHTML = 'Updated!';
@@ -62,3 +61,4 @@ export function renderAnilistMatch(state) {
         };
     }
 }
+//# sourceMappingURL=anilist-match.js.map
