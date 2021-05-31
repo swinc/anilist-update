@@ -9,7 +9,9 @@ export function loginToAnilist (): Promise<boolean|Error> {
       .then((authResponse) => {
         chrome.storage.sync.set(
           { accessToken: authResponse.accessToken },
-          () => { resolve(true) }
+          () => {
+            alert("You have successfully logged into Anilist.")
+            resolve(true) }
         )
       })
       .catch((error) => {

@@ -7,12 +7,12 @@ function getActiveTabId (): Promise<number> {
 
 export async function getMediaTitle (): Promise<string> {
   const activeTabId = await getActiveTabId()
-  return new Promise((resolve, reject) => {
-    chrome.tabs.sendMessage(activeTabId, 'get-media-title', {}, (response) => {
-      if (!response) {
-        reject(new Error('No response received.'))
-      }
-      resolve(response)
-    })
+  return new Promise((resolve) => {
+    try {
+      chrome.tabs.sendMessage(activeTabId, 'get-media-title', {}, resolve)
+    } catch (e) {
+      resolve(e)
+      console.log('caught an error:', e)
+    }
   })
 }
