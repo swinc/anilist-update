@@ -1,5 +1,7 @@
 /* globals chrome */
 
+import { loginToAnilist } from './lib/login-to-anilist.js'
+
 // set rule and listener for extension page action
 const targetPagesRule = {
   conditions: [
@@ -19,4 +21,10 @@ chrome.runtime.onInstalled.addListener(function () {
   chrome.declarativeContent.onPageChanged.removeRules(undefined, function () {
     chrome.declarativeContent.onPageChanged.addRules([targetPagesRule])
   })
+})
+
+chrome.runtime.onMessage.addListener(async (message) => {
+  if (message === 'start-login') {
+    await loginToAnilist()
+  }
 })

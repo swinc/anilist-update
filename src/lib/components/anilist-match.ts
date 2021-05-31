@@ -35,7 +35,7 @@ function composeAnilistMatch (state: AppState) {
         </div>
       </div>
     `
-  } else if (state?.userMediaListData?.data?.MediaList == null) {
+  } else if (state?.userMediaListData?.data?.MediaList === null) {
     return `
       <p>This title is not on your list.</p>
     `

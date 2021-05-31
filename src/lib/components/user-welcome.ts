@@ -1,6 +1,5 @@
 /* globals chrome */
 
-import { loginToAnilist } from '../login-to-anilist.js'
 import { renderPopup } from '../../popup.js'
 import { AppState } from '../types'
 
@@ -26,11 +25,7 @@ export function renderUserWelcome (state: AppState) {
   if (loginButton) { // if rendered
     loginButton.onclick = function () {
       loginButton.innerHTML = 'Opening login window...'
-      loginToAnilist()
-        .then(async () => {
-          await renderPopup()
-        })
-        .catch(console.error)
+      chrome.runtime.sendMessage('start-login')
     }
   }
   const logoutLink: HTMLAnchorElement = document.querySelector('#logout-link')

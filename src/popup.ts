@@ -6,18 +6,21 @@ import { getMediaTitle } from './lib/get-media-title.js'
 import { renderUserWelcome } from './lib/components/user-welcome.js'
 import { renderContentDetection } from './lib/components/content-detection.js'
 import { renderAnilistMatch } from './lib/components/anilist-match.js'
-import { AppState, MediaData, MediaListData } from './lib/types'
+import { AppState, UserData, MediaData, MediaListData } from './lib/types'
 
 export async function renderPopup () {
   // TODO: display loading block
 
   const accessToken = await getStoredAccessToken()
-  const userData = await queryUserData(accessToken)
+  let userData = null as UserData
+  if (accessToken) {
+    userData = await queryUserData(accessToken)
+  }
   const mediaTitle = await getMediaTitle()
 
   let mediaData = null as MediaData
   let userMediaListData = null as MediaListData
-  if (mediaTitle) {
+  if (mediaTitle && userData) {
     mediaData = await querySearchMedia(mediaTitle)
     userMediaListData = await queryUserMediaNotes(mediaData.data.Media.id, userData.data.Viewer.name)
   }
