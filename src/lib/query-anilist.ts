@@ -1,14 +1,22 @@
-/* globals fetch */
+import { MediaData, UserData, MediaListData } from './types'
+
+interface AnilistRequestInit extends RequestInit {
+  headers: {
+    'Content-Type': string,
+    Accept: string,
+    Authorization?: string
+  }
+}
 
 // generic query function
-export function queryAnilist (query, variables, accessToken) {
+export function queryAnilist(query: string, variables: {}, accessToken: string): Promise<{}> {
   return new Promise((resolve, reject) => {
-    var url = 'https://graphql.anilist.co'
-    var options = {
+    const url = 'https://graphql.anilist.co'
+    const options: AnilistRequestInit = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Accept: 'application/json'
+        Accept: 'application/json',
       },
       body: JSON.stringify({
         query: query,
@@ -22,14 +30,14 @@ export function queryAnilist (query, variables, accessToken) {
 
     // make the API request
     fetch(url, options)
-      .then(handleResponse)
-      .then((result) => resolve(result))
+      .then(extractJson)
+      .then((json: {}) => resolve(json))
       .catch((error) => {
         console.error(error)
-        resolve(error)
+        reject(error)
       })
 
-    function handleResponse (response) {
+    function extractJson(response: Response): Promise<{}> {
       return response.json().then(function (json) {
         return response.ok ? json : Promise.reject(json)
       })
@@ -37,7 +45,7 @@ export function queryAnilist (query, variables, accessToken) {
   })
 }
 
-export function querySearchMedia (searchString) {
+export function querySearchMedia(searchString: string): Promise<MediaData> {
   return new Promise((resolve, reject) => {
     if (!searchString || searchString === '') {
       reject(new Error('invalid value for searchString'))
@@ -59,14 +67,14 @@ export function querySearchMedia (searchString) {
     `
     const variables = { search: searchString }
     queryAnilist(query, variables, null)
-      .then((result) => resolve(result))
+      .then((result: MediaData) => resolve(result))
       .catch((error) => reject(error))
   })
 }
 
-export function queryUserMediaNotes (mediaId, userName) {
+export function queryUserMediaNotes(mediaId: number, userName: string): Promise<MediaListData> {
   return new Promise((resolve, reject) => {
-    if (!parseInt(mediaId) || !userName) {
+    if (!Number.isInteger(mediaId) || !userName) {
       reject(new Error('invalid values for mediaId or userName'))
       return
     }
@@ -81,12 +89,23 @@ export function queryUserMediaNotes (mediaId, userName) {
     `
     const variables = { mediaId: mediaId, userName: userName }
     queryAnilist(query, variables, null)
-      .then((result) => resolve(result))
-      .catch((error) => reject(error))
+      .then((response: MediaListData) => resolve(response))
+      .catch((errorResponse: MediaListData) => {
+        if (errorResponse.data.MediaList === null) {
+          resolve(null)
+        } else {
+          reject(errorResponse)
+        }
+      })
   })
 }
 
-export function updateUserMediaNotes (mediaId, progress, score, accessToken) {
+export function updateUserMediaNotes(
+  mediaId: number,
+  progress: number,
+  score: number,
+  accessToken: string
+) {
   return new Promise((resolve, reject) => {
     if (isNaN(mediaId) || isNaN(progress) || isNaN(score) || !accessToken) {
       reject(new Error(`ERROR: invalid value for mediaId (${mediaId}), progress (${progress}),
@@ -109,7 +128,7 @@ export function updateUserMediaNotes (mediaId, progress, score, accessToken) {
   })
 }
 
-export function queryUserData (accessToken) {
+export function queryUserData(accessToken: string): Promise<UserData> {
   return new Promise((resolve, reject) => {
     const query = `
       query {
@@ -121,7 +140,7 @@ export function queryUserData (accessToken) {
       }
     `
     queryAnilist(query, null, accessToken)
-      .then((response) => { console.log('queryUserData: ', response); resolve(response) })
+      .then((response: UserData) => { resolve(response) })
       .catch((error) => reject(error))
   })
 }

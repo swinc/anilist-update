@@ -1,9 +1,4 @@
-interface AuthData {
-  responseUrl: string,
-  accessToken: string,
-  tokenType: string,
-  expiresIn: string
-}
+import { ParsedAuthData } from './types'
 
 /**
  *  Returns promise which resolves with true on success / completion
@@ -24,7 +19,7 @@ export function loginToAnilist (): Promise<boolean|Error> {
   })
 }
 
-function launchAnilistWebAuth (): Promise<AuthData> {
+function launchAnilistWebAuth (): Promise<ParsedAuthData> {
   const loginLink = 'https://anilist.co/api/v2/oauth/authorize?client_id=4552&response_type=token'
   console.log('loginLink', loginLink)
 

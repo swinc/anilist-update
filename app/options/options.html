@@ -5,44 +5,7 @@
   </head>
   <body>
     <img src="../images/icon48.png"><h1>AutoUpdate for Anilist / Options</h1>
-    <h2>Your Anilist Account</h2>
-    <!-- html for account not connected -->
-    <div id="account-not-connected" class="hidden">
-      <p>Your Anilist account is not connected.</p>
-      <p><button id="anilist-login-button">Login to Anilist.co</button></p>
-    </div>
-    <!-- end -->
-    <!-- html for account connected -->
-    <div id="account-connected" class="hidden">
-      <p>You are connected to an Anilist.co account. <a id="logout-link" href="#">Log out.</a></p>
-      <p>You can test this connection by using this extention to set your account language to 'english'.</p>
-      <p>
-        <button id="anilist-test-button">Test Connection</button>
-        <div id='test-connection-result'></div>
-      </p>
-    </div>
-    <!-- end -->
-    <hr>
-    <h2>Test Unauthenticated API</h2>
-    <p>This should work regardless of whether you are logged into Anilist.co.</p>
-    <p>Select a numeric Media ID to pull by <a href="https://anilist.co/search/anime">browsing</a> and copying the number in the URL for a particular media item.</p>
-    <p>E.g., https://anilist.co/anime/<span class="highlight">16498</span>/Attack-on-Titan/</p>
-    <form>
-      <label for="unauth-media-id">Media ID: </label>
-      <input type="text" size="8" id="unauth-media-id" name="unauth-media-id" placeholder="16498">
-      <p><input type="submit" id="unauth-media-submit" value="Pull Media"></p>
-    </form>
-    <div id="unauth-media-result"></div>
-    <hr>
-    <h2>Test Authenticated API</h2>
-    <p>You must be logged into Anilist.co for success.</p>
-    <p>Save a specific media item to your profile by reference to its Media ID, then check for yourself.</p>
-    <form>
-      <label for="auth-media-id">Media ID: </label>
-      <input type="text" size="8" id="auth-media-id" name="auth-media-id" placeholder="16498">
-      <p><input type="submit" id="auth-media-submit" value="Save Media to Profile"></p>
-    </form>
-    <div id="auth-media-result"></div>
+    <p>Nothing here yet.</p>
   <script type="module" src="options.js"></script>
   </body>
 </html>

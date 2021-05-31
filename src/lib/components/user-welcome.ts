@@ -1,12 +1,13 @@
 /* globals chrome */
 
 import { loginToAnilist } from '../login-to-anilist.js'
-import { renderPopup, AppState } from '../../popup.js'
+import { renderPopup } from '../../popup.js'
+import { AppState } from '../types'
 
 function composeUserWelcome (state: AppState) {
-  if (state.userData && state.userData.accessToken && state.userData.userName) {
+  if (state.userData && state.accessToken && state.userData.data.Viewer.name) {
     return `
-      <p>Hello <span class='username'>${state.userData.userName}</span>!
+      <p>Hello <span class='username'>${state.userData.data.Viewer.name}</span>!
       <a id="logout-link" href="#">Log out</a></p>
     `
   } else {

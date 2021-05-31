@@ -4,7 +4,7 @@ function getActiveTabId() {
         chrome.tabs.query({ active: true }, (tabsArray) => { resolve(tabsArray[0].id); });
     });
 }
-export async function getContentTitle() {
+export async function getMediaTitle() {
     const activeTabId = await getActiveTabId();
     return new Promise((resolve, reject) => {
         chrome.tabs.sendMessage(activeTabId, 'get-media-title', {}, (response) => {
@@ -15,4 +15,4 @@ export async function getContentTitle() {
         });
     });
 }
-//# sourceMappingURL=get-content-title.js.map
+//# sourceMappingURL=get-media-title.js.map

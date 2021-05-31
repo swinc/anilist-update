@@ -1,31 +1,51 @@
 export interface AppState {
+  accessToken: string,
+  mediaSearchData: MediaData,
+  mediaTitle: string,
   searchBoxText: string,
   userData: UserData,
-  contentTitle: contentTitle,
-  mediaData: MediaData,
-  usercontentTitle: UsercontentTitle
+  userMediaListData: MediaListData
 }
 
-interface UserData {
+export interface UserData {
+  data: {
+    Viewer: {
+      id: number,
+      name: string,
+      siteUrl: string
+    }
+  }
+}
+
+export interface MediaData {
+  data: {
+    Media: {
+      coverImage: {
+        medium: string
+      },
+      episodes: number,
+      id: number,
+      title: {
+        english: string
+      }
+    }
+  },
+  errors?: []
+}
+
+export interface MediaListData {
+  data: {
+    MediaList: {
+      progress: number,
+      score: number,
+      status: string
+    }
+  }
+}
+
+export interface ParsedAuthData {
+  responseUrl: string,
   accessToken: string,
-  userId: number,
-  userName: string,
-  userSiteUrl: string
-}
-
-interface contentTitle {
-  detected: boolean,
-  title: string
-}
-
-interface MediaData {
-
-}
-
-interface UsercontentTitle {
-
-}
-
-export interface BackgroundWindow extends Window {
-  contentTitle?: contentTitle
+  tokenType: string,
+  expiresIn: string
 }

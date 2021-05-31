@@ -1,13 +1,12 @@
-/* globals fetch */
 // generic query function
 export function queryAnilist(query, variables, accessToken) {
     return new Promise((resolve, reject) => {
-        var url = 'https://graphql.anilist.co';
-        var options = {
+        const url = 'https://graphql.anilist.co';
+        const options = {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Accept: 'application/json'
+                Accept: 'application/json',
             },
             body: JSON.stringify({
                 query: query,
@@ -19,13 +18,13 @@ export function queryAnilist(query, variables, accessToken) {
         }
         // make the API request
         fetch(url, options)
-            .then(handleResponse)
-            .then((result) => resolve(result))
+            .then(extractJson)
+            .then((json) => resolve(json))
             .catch((error) => {
             console.error(error);
-            resolve(error);
+            reject(error);
         });
-        function handleResponse(response) {
+        function extractJson(response) {
             return response.json().then(function (json) {
                 return response.ok ? json : Promise.reject(json);
             });
@@ -60,7 +59,7 @@ export function querySearchMedia(searchString) {
 }
 export function queryUserMediaNotes(mediaId, userName) {
     return new Promise((resolve, reject) => {
-        if (!parseInt(mediaId) || !userName) {
+        if (!Number.isInteger(mediaId) || !userName) {
             reject(new Error('invalid values for mediaId or userName'));
             return;
         }
@@ -75,8 +74,15 @@ export function queryUserMediaNotes(mediaId, userName) {
     `;
         const variables = { mediaId: mediaId, userName: userName };
         queryAnilist(query, variables, null)
-            .then((result) => resolve(result))
-            .catch((error) => reject(error));
+            .then((response) => resolve(response))
+            .catch((errorResponse) => {
+            if (errorResponse.data.MediaList === null) {
+                resolve(null);
+            }
+            else {
+                reject(errorResponse);
+            }
+        });
     });
 }
 export function updateUserMediaNotes(mediaId, progress, score, accessToken) {
@@ -113,7 +119,7 @@ export function queryUserData(accessToken) {
       }
     `;
         queryAnilist(query, null, accessToken)
-            .then((response) => { console.log('queryUserData: ', response); resolve(response); })
+            .then((response) => { resolve(response); })
             .catch((error) => reject(error));
     });
 }

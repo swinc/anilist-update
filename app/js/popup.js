@@ -1,45 +1,30 @@
 /* globals chrome */
+import { getStoredAccessToken } from './lib/get-stored-access-token.js';
 import { querySearchMedia, queryUserMediaNotes, queryUserData } from './lib/query-anilist.js';
-import { getUserData } from './lib/user-data.js';
-import { getContentTitle } from './lib/get-content-title.js';
+import { getMediaTitle } from './lib/get-media-title.js';
 import { renderUserWelcome } from './lib/components/user-welcome.js';
 import { renderContentDetection } from './lib/components/content-detection.js';
 import { renderAnilistMatch } from './lib/components/anilist-match.js';
 export async function renderPopup() {
     // TODO: display loading block
-    let userData = await getUserData();
-    if (userData.accessToken && !userData.userName) {
-        const remainingUserData = await queryUserData(userData.accessToken);
-        chrome.storage.sync.set({
-            userId: remainingUserData.data.Viewer.id,
-            userName: remainingUserData.data.Viewer.name,
-            userSiteUrl: remainingUserData.data.Viewer.siteUrl
-        });
-        userData = {
-            ...userData,
-            userId: remainingUserData.data.Viewer.id,
-            userName: remainingUserData.data.Viewer.name,
-            userSiteUrl: remainingUserData.data.Viewer.siteUrl
-        };
-    }
-    const contentTitle = await getContentTitle();
+    const accessToken = await getStoredAccessToken();
+    const userData = await queryUserData(accessToken);
+    const mediaTitle = await getMediaTitle();
     let mediaData = null;
-    let usercontentTitle = null;
-    if (contentTitle && userData && userData.userName) {
-        mediaData = await querySearchMedia(contentTitle);
-        usercontentTitle = await queryUserMediaNotes(mediaData.data.Media.id, userData.userName);
+    let userMediaListData = null;
+    if (mediaTitle) {
+        mediaData = await querySearchMedia(mediaTitle);
+        userMediaListData = await queryUserMediaNotes(mediaData.data.Media.id, userData.data.Viewer.name);
     }
-    console.log('userData:', userData);
-    console.log('contentTitle:', contentTitle);
-    console.log('mediaData:', mediaData);
-    console.log('usercontentTitle:', usercontentTitle);
     const state = {
+        accessToken: accessToken,
+        mediaSearchData: mediaData,
+        mediaTitle: mediaTitle,
         searchBoxText: '',
         userData: userData,
-        contentTitle: contentTitle,
-        mediaData: mediaData,
-        usercontentTitle: usercontentTitle
+        userMediaListData: userMediaListData
     };
+    console.log('AppState:', state);
     renderUserWelcome(state);
     renderContentDetection(state);
     renderAnilistMatch(state);

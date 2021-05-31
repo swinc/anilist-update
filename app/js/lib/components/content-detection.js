@@ -5,10 +5,10 @@ function composeContentDetection(state) {
         console.error('ERROR: no state passed to composeContentDetection()');
         return '';
     }
-    else if (!state.userData || !state.userData.userName) { // no user data
+    else if (!state.userData?.data?.Viewer?.name) { // no user data
         return '';
     }
-    else if (!state.contentTitle) { // user data but no content data
+    else if (!state.mediaTitle) { // user data but no content data
         return `
       <p>No content detected.<p>
       <p>Search Anilist: <input id="search-box" type="text" value=""></p>
@@ -16,8 +16,8 @@ function composeContentDetection(state) {
     }
     else { // we have user data and content data
         return `
-      <p>You're watching ${state.contentTitle}.</p>
-      <p>Search Anilist: <input id="search-box" type="text" value="${state.contentTitle}"></p>
+      <p>You're watching ${state.mediaTitle}.</p>
+      <p>Search Anilist: <input id="search-box" type="text" value="${state.mediaTitle}"></p>
     `;
     }
 }
@@ -28,16 +28,13 @@ export function renderContentDetection(state) {
     if (searchBox) {
         searchBox.onkeydown = async function (event) {
             if (event.key === 'Enter') {
-                const contentTitle = searchBox.value;
-                const mediaData = await querySearchMedia(contentTitle);
-                const userName = state.userData.userName;
-                const usercontentTitle = await queryUserMediaNotes(mediaData.data.Media.id, userName);
+                const mediaSearchData = await querySearchMedia(searchBox.value);
+                const mediaListData = await queryUserMediaNotes(mediaSearchData.data.Media.id, state.userData.data.Viewer.name);
                 renderAnilistMatch({
-                    searchBoxText: contentTitle,
-                    userData: state.userData,
-                    contentTitle: null,
-                    mediaData: mediaData,
-                    usercontentTitle: usercontentTitle
+                    ...state,
+                    mediaSearchData: mediaSearchData,
+                    searchBoxText: searchBox.value,
+                    userMediaListData: mediaListData
                 });
             }
         };
