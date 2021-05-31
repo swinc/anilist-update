@@ -1,4 +1,4 @@
-interface UserData {
+export interface UserData {
   accessToken: string,
   userId: number,
   userName: string,

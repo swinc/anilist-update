@@ -1,4 +1,4 @@
-interface authData {
+interface AuthData {
   responseUrl: string,
   accessToken: string,
   tokenType: string,
@@ -24,7 +24,7 @@ export function loginToAnilist (): Promise<boolean|Error> {
   })
 }
 
-function launchAnilistWebAuth (): Promise<authData> {
+function launchAnilistWebAuth (): Promise<AuthData> {
   const loginLink = 'https://anilist.co/api/v2/oauth/authorize?client_id=4552&response_type=token'
   console.log('loginLink', loginLink)
 

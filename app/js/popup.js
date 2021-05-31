@@ -8,7 +8,7 @@ import { renderAnilistMatch } from './lib/components/anilist-match.js';
 export async function renderPopup() {
     // TODO: display loading block
     let userData = await getUserData();
-    if (userData && userData.accessToken && !userData.userName) {
+    if (userData.accessToken && !userData.userName) {
         const remainingUserData = await queryUserData(userData.accessToken);
         chrome.storage.sync.set({
             userId: remainingUserData.data.Viewer.id,
@@ -21,7 +21,6 @@ export async function renderPopup() {
             userName: remainingUserData.data.Viewer.name,
             userSiteUrl: remainingUserData.data.Viewer.siteUrl
         };
-        console.log('new user data', userData);
     }
     const contentTitle = await getContentTitle();
     let mediaData = null;

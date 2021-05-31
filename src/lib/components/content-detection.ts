@@ -1,7 +1,8 @@
 import { querySearchMedia, queryUserMediaNotes } from '../query-anilist.js'
 import { renderAnilistMatch } from './anilist-match.js'
+import { AppState } from '../../popup.js'
 
-function composeContentDetection (state) {
+function composeContentDetection (state: AppState) {
   if (!state) {
     console.error('ERROR: no state passed to composeContentDetection()')
     return ''
@@ -20,20 +21,22 @@ function composeContentDetection (state) {
   }
 }
 
-export function renderContentDetection (state) {
+export function renderContentDetection (state: AppState) {
   const contentDetectionHtml = composeContentDetection(state)
   document.querySelector('#content-detection').innerHTML = contentDetectionHtml
 
-  const searchBox = document.querySelector('#search-box')
+  const searchBox: HTMLInputElement = document.querySelector('#search-box')
   if (searchBox) {
     searchBox.onkeydown = async function (event) {
       if (event.key === 'Enter') {
-        const contentTitle = document.querySelector('#search-box').value
+        const contentTitle = searchBox.value
         const mediaData = await querySearchMedia(contentTitle)
         const userName = state.userData.userName
         const usercontentTitle = await queryUserMediaNotes(mediaData.data.Media.id, userName)
         renderAnilistMatch({
+          searchBoxText: contentTitle,
           userData: state.userData,
+          contentTitle: null,
           mediaData: mediaData,
           usercontentTitle: usercontentTitle
         })

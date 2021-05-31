@@ -1,6 +1,7 @@
 import { updateUserMediaNotes } from '../query-anilist.js'
+import { AppState } from '../../popup.js'
 
-function composeAnilistMatch (state) {
+function composeAnilistMatch (state: AppState) {
   if (state && state.mediaData && state.usercontentTitle && state.usercontentTitle.data.MediaList) {
     const title = state.mediaData.data.Media.title.english
     const imageUrl = state.mediaData.data.Media.coverImage.medium
@@ -43,17 +44,17 @@ function composeAnilistMatch (state) {
   }
 }
 
-export function renderAnilistMatch (state) {
+export function renderAnilistMatch (state: AppState) {
   const contentDetectionHtml = composeAnilistMatch(state)
   document.querySelector('#anilist-match').innerHTML = contentDetectionHtml
 
-  const updateButton = document.querySelector('#update-button')
+  const updateButton: HTMLButtonElement = document.querySelector('#update-button')
   if (updateButton) {
     updateButton.onclick = function () {
       updateButton.innerHTML = 'Updating...'
 
-      const episodeProgress = document.querySelector('#episode-progress').value
-      const userScore = document.querySelector('#score').value
+      const episodeProgress = (document.querySelector('#episode-progress') as HTMLInputElement).value
+      const userScore = (document.querySelector('#score') as HTMLInputElement).value
       const mediaId = state.mediaData.data.Media.id
       const accessToken = state.userData.accessToken
       updateUserMediaNotes(mediaId, episodeProgress, userScore, accessToken)

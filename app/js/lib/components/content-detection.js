@@ -28,12 +28,14 @@ export function renderContentDetection(state) {
     if (searchBox) {
         searchBox.onkeydown = async function (event) {
             if (event.key === 'Enter') {
-                const contentTitle = document.querySelector('#search-box').value;
+                const contentTitle = searchBox.value;
                 const mediaData = await querySearchMedia(contentTitle);
                 const userName = state.userData.userName;
                 const usercontentTitle = await queryUserMediaNotes(mediaData.data.Media.id, userName);
                 renderAnilistMatch({
+                    searchBoxText: contentTitle,
                     userData: state.userData,
+                    contentTitle: null,
                     mediaData: mediaData,
                     usercontentTitle: usercontentTitle
                 });

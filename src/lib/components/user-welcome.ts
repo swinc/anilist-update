@@ -1,9 +1,9 @@
 /* globals chrome */
 
 import { loginToAnilist } from '../login-to-anilist.js'
-import { renderPopup } from '../../popup.js'
+import { renderPopup, AppState } from '../../popup.js'
 
-function composeUserWelcome (state) {
+function composeUserWelcome (state: AppState) {
   if (state.userData && state.userData.accessToken && state.userData.userName) {
     return `
       <p>Hello <span class='username'>${state.userData.userName}</span>!
@@ -17,7 +17,7 @@ function composeUserWelcome (state) {
   }
 }
 
-export function renderUserWelcome (state) {
+export function renderUserWelcome (state: AppState) {
   const userWelcomeHtml = composeUserWelcome(state)
   document.querySelector('#user-welcome').innerHTML = userWelcomeHtml
 
