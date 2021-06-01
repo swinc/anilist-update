@@ -21,6 +21,7 @@ chrome.runtime.onInstalled.addListener(function () {
 
 // entire login function must be inside this file because service workers cannot import
 // modules until Chrome 93 (allegedly)
+// see https://stackoverflow.com/questions/66114920/service-worker-registration-failed-chrome-extension
 chrome.runtime.onMessage.addListener((message) => {
   if (message == 'do-login') {
     const loginLink = 'https://anilist.co/api/v2/oauth/authorize?client_id=4552&response_type=token'
