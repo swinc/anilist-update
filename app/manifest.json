@@ -2,11 +2,11 @@
    "name": "AutoUpdater for AniList",
    "version": "1.0",
    "description": "An auto-updater for AniList.co",
-   "permissions": ["activeTab", "declarativeContent", "storage", "identity", "tabs"],
+   "permissions": ["activeTab", "declarativeContent", "storage", "identity", "tabs", "notifications"],
    "options_page": "options/options.html",
    "background": {
-      "page": "background.html",
-      "persistent": false
+      "service_worker": "background.js",
+      "type": "module"
    },
    "oauth2": {
      "client_id": "pgjechodekepedeanbechdodnkilemkj",
@@ -17,10 +17,10 @@
      {
        "matches": ["https://*.crunchyroll.com/*"],
        "run_at": "document_idle",
-       "js": ["js/content-script.js"]
+       "js": ["content-script.js"]
      }
    ],
-   "page_action": {
+   "action": {
       "default_popup": "popup/popup.html",
       "default_icon": {
          "16": "images/icon16.png",
@@ -35,5 +35,5 @@
       "48": "images/icon48.png",
       "128": "images/icon128.png"
    },
-   "manifest_version": 2
+   "manifest_version": 3
 }

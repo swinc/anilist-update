@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./app/js",
+    "outDir": "./app",
     "inlineSourceMap": true,
     "noImplicitAny": true,
     "module": "es2020",
