@@ -1,6 +1,4 @@
-/* globals chrome */
-
-import { renderPopup } from '../../popup.js'
+import { renderPopup } from '../../popup/popup.js'
 import { AppState } from '../types'
 
 function composeUserWelcome (state: AppState) {
@@ -25,7 +23,7 @@ export function renderUserWelcome (state: AppState) {
   if (loginButton) { // if rendered
     loginButton.onclick = function () {
       loginButton.innerHTML = 'Opening login window...'
-      chrome.runtime.sendMessage('start-login')
+      chrome.runtime.sendMessage('do-login')
     }
   }
   const logoutLink: HTMLAnchorElement = document.querySelector('#logout-link')
