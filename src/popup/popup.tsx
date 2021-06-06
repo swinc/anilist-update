@@ -5,7 +5,7 @@ import { getStoredAccessToken } from '../lib/get-stored-access-token'
 import { querySearchMedia, queryUserMediaNotes, queryUserData } from '../lib/query-anilist'
 import { getMediaTitle } from '../lib/get-media-title'
 import { UserLoginMessage } from '../components/user-welcome'
-import { renderContentDetection } from '../components/content-detection'
+import { ContentDetection } from '../components/content-detection'
 import { renderAnilistMatch } from '../components/anilist-match'
 import { AppState, UserData, MediaData, MediaListData } from '../lib/types'
 
@@ -40,7 +40,10 @@ export async function renderPopup () {
     <UserLoginMessage accessToken={state.accessToken} userData={state.userData} />,
     document.getElementById('user-welcome')
   )
-  renderContentDetection(state)
+  ReactDOM.render(
+    <ContentDetection mediaTitle={state.mediaTitle} userData={state.userData} />,
+    document.getElementById('content-detection')
+  )
   renderAnilistMatch(state)
 }
 
