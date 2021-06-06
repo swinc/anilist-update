@@ -1,5 +1,5 @@
-import { updateUserMediaNotes } from '../query-anilist.js'
-import { AppState } from '../types'
+import { updateUserMediaNotes } from '../lib/query-anilist'
+import { AppState } from '../lib/types'
 
 function composeAnilistMatch (state: AppState) {
   if (state?.mediaSearchData && state.userMediaListData?.data.MediaList) {

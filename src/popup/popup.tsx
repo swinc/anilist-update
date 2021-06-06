@@ -1,9 +1,12 @@
-import { getStoredAccessToken } from '../lib/get-stored-access-token.js'
-import { querySearchMedia, queryUserMediaNotes, queryUserData } from '../lib/query-anilist.js'
-import { getMediaTitle } from '../lib/get-media-title.js'
-import { renderUserWelcome } from '../lib/components/user-welcome.js'
-import { renderContentDetection } from '../lib/components/content-detection.js'
-import { renderAnilistMatch } from '../lib/components/anilist-match.js'
+import React from 'react'
+import ReactDOM from 'react-dom'
+
+import { getStoredAccessToken } from '../lib/get-stored-access-token'
+import { querySearchMedia, queryUserMediaNotes, queryUserData } from '../lib/query-anilist'
+import { getMediaTitle } from '../lib/get-media-title'
+import { UserLoginMessage } from '../components/user-welcome'
+import { renderContentDetection } from '../components/content-detection'
+import { renderAnilistMatch } from '../components/anilist-match'
 import { AppState, UserData, MediaData, MediaListData } from '../lib/types'
 
 export async function renderPopup () {
@@ -33,7 +36,10 @@ export async function renderPopup () {
 
   console.log('AppState:', state)
 
-  renderUserWelcome(state)
+  ReactDOM.render(
+    <UserLoginMessage accessToken={state.accessToken} userData={state.userData} />,
+    document.getElementById('user-welcome')
+  )
   renderContentDetection(state)
   renderAnilistMatch(state)
 }

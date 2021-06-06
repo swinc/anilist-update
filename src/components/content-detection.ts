@@ -1,6 +1,6 @@
-import { querySearchMedia, queryUserMediaNotes } from '../query-anilist.js'
-import { renderAnilistMatch } from './anilist-match.js'
-import { AppState } from '../types'
+import { querySearchMedia, queryUserMediaNotes } from '../lib/query-anilist'
+import { renderAnilistMatch } from './anilist-match'
+import { AppState } from '../lib/types'
 
 function composeContentDetection (state: AppState) {
   if (!state) {
