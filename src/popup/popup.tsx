@@ -6,7 +6,7 @@ import { querySearchMedia, queryUserMediaNotes, queryUserData } from '../lib/que
 import { getMediaTitle } from '../lib/get-media-title'
 import { UserLoginMessage } from '../components/user-welcome'
 import { ContentDetection } from '../components/content-detection'
-import { renderAnilistMatch } from '../components/anilist-match'
+import { AnilistMatch } from '../components/anilist-match'
 import { AppState, UserData, MediaData, MediaListData } from '../lib/types'
 
 export async function renderPopup () {
@@ -44,7 +44,10 @@ export async function renderPopup () {
     <ContentDetection mediaTitle={state.mediaTitle} userData={state.userData} />,
     document.getElementById('content-detection')
   )
-  renderAnilistMatch(state)
+  ReactDOM.render(
+    <AnilistMatch mediaSearchData={state.mediaSearchData} userMediaListData={state.userMediaListData} />,
+    document.getElementById('anilist-match')
+  )
 }
 
 document.addEventListener('DOMContentLoaded', async function () {
