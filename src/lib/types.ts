@@ -4,7 +4,8 @@ export interface AppState {
   mediaTitle: string,
   searchBoxText: string,
   userData: UserData,
-  userMediaListData: MediaListData
+  userMediaListData: MediaListData,
+  showUpdateComplete: boolean
 }
 
 export interface UserData {
@@ -39,6 +40,16 @@ export interface MediaListData {
       progress: number,
       score: number,
       status: string
+    }
+  }
+}
+
+export interface SaveMediaListEntry {
+  data: {
+    SaveMediaListEntry: {
+      id: number,
+      progress: number,
+      score: number
     }
   }
 }
