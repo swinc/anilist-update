@@ -6,9 +6,9 @@ import {
   queryUserMediaNotes,
   updateUserMediaNotes
 } from '../lib/query-anilist'
-import { UserLoginMessage } from '../components/user-welcome'
-import { ContentDetection } from '../components/content-detection'
-import { AnilistMatch } from '../components/anilist-match'
+import { UserLoginMessage } from '../components/UserLoginMessage'
+import { ContentDetection } from '../components/ContentDetection'
+import { SearchResults } from '../components/SearchResults'
 import { AppState, UserData, SaveMediaListEntry } from '../lib/types'
 
 export class PopupApp extends React.Component<AppState, AppState> {
@@ -106,7 +106,7 @@ export class PopupApp extends React.Component<AppState, AppState> {
           userData={this.state.userData}
           onMediaSearch={this.doMediaSearch}
         />
-        <AnilistMatch
+        <SearchResults
           mediaSearchData={this.state.mediaSearchData}
           userMediaListData={this.state.userMediaListData}
           onUserNotesUpdate={this.doUserNotesUpdate}

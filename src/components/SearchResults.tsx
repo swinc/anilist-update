@@ -2,21 +2,21 @@ import React from 'react'
 
 import { MediaData, MediaListData } from '../lib/types'
 
-interface AnilistMatchProps {
+interface SearchResultsProps {
   mediaSearchData: MediaData,
   userMediaListData: MediaListData
   onUserNotesUpdate: Function,
   showUpdateComplete: boolean
 }
 
-interface AnilistMatchState {
+interface SearchResultsState {
   updateButtonText: string,
   episodeProgress: string | number,
   userScore: string | number
 }
 
-export class AnilistMatch extends React.Component<AnilistMatchProps, AnilistMatchState> {
-  constructor(props: AnilistMatchProps) {
+export class SearchResults extends React.Component<SearchResultsProps, SearchResultsState> {
+  constructor(props: SearchResultsProps) {
     super(props)
 
     this.state = {

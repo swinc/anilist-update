@@ -16,6 +16,7 @@ export function renderPopup(state: AppState) {
       searchBoxText={state.searchBoxText}
       userData={state.userData}
       userMediaListData={state.userMediaListData}
+      showUpdateComplete={state.showUpdateComplete}
     />,
     document.getElementById('popup-app')
   )
@@ -45,7 +46,8 @@ document.addEventListener('DOMContentLoaded', async function () {
     mediaTitle: mediaTitle,
     searchBoxText: searchBoxText,
     userData: userData,
-    userMediaListData: userMediaListData
+    userMediaListData: userMediaListData,
+    showUpdateComplete: false
   }
 
   console.log('AppState:', state)

@@ -1,11 +1,11 @@
 export interface AppState {
-  accessToken?: string,
-  mediaSearchData?: MediaData,
-  mediaTitle?: string,
-  searchBoxText?: string,
-  userData?: UserData,
-  userMediaListData?: MediaListData,
-  showUpdateComplete?: boolean
+  accessToken: string,
+  mediaSearchData: MediaData,
+  mediaTitle: string,
+  searchBoxText: string,
+  userData: UserData,
+  userMediaListData: MediaListData,
+  showUpdateComplete: boolean
 }
 
 export interface UserData {
