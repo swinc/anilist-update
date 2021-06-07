@@ -1,12 +1,73 @@
 import React from 'react'
 
-// import { updateUserMediaNotes } from '../lib/query-anilist'
-import { AppState } from '../lib/types'
+import { MediaData, MediaListData } from '../lib/types'
 
-export class AnilistMatch extends React.Component<AppState> {
-  constructor(props: AppState) {
+interface AnilistMatchProps {
+  mediaSearchData: MediaData,
+  userMediaListData: MediaListData
+  onUserNotesUpdate: Function,
+  showUpdateComplete: boolean
+}
+
+interface AnilistMatchState {
+  updateButtonText: string,
+  episodeProgress: string | number,
+  userScore: string | number
+}
+
+export class AnilistMatch extends React.Component<AnilistMatchProps, AnilistMatchState> {
+  constructor(props: AnilistMatchProps) {
     super(props)
+
+    this.state = {
+      updateButtonText: 'Update',
+      episodeProgress: this.props.userMediaListData.data.MediaList.progress,
+      userScore: this.props.userMediaListData.data.MediaList.score
+    }
+
+    this.handleEpisodeProgressChange = this.handleEpisodeProgressChange.bind(this)
+    this.handleUserScoreChange = this.handleUserScoreChange.bind(this)
+    this.handleUpdateClick = this.handleUpdateClick.bind(this)
   }
+
+  handleEpisodeProgressChange(e: React.ChangeEvent<HTMLInputElement>) {
+    console.log(e)
+    this.setState((prev) => {
+      return {
+        ...prev,
+        episodeProgress: e.target.value
+      }
+    })
+  }
+
+  handleUserScoreChange(e: React.ChangeEvent<HTMLInputElement>) {
+    this.setState((prev) => {
+      return {
+        ...prev,
+        userScore: e.target.value
+      }
+    })
+  }
+
+  handleUpdateClick() {
+    this.setState(
+      (prev) => { return { ...prev, updateButtonText: 'Updating...' }},
+      () => { this.props.onUserNotesUpdate(this.state.episodeProgress, this.state.userScore) }
+    )
+  }
+
+  componentWillReceiveProps(nextProps: AnilistMatchProps) {
+    if (nextProps.userMediaListData.data.MediaList.progress !== this.props.userMediaListData.data.MediaList.progress) {
+      this.setState((prev) => {
+        return { ...prev, episodeProgress: nextProps.userMediaListData.data.MediaList.progress }
+      })
+    }
+    if (nextProps.userMediaListData.data.MediaList.score !== this.props.userMediaListData.data.MediaList.score) {
+      this.setState((prev) => {
+        return { ...prev, userScore: nextProps.userMediaListData.data.MediaList.score }
+      })
+    }
+}
 
   render() {
     if (this.props.mediaSearchData && this.props.userMediaListData?.data.MediaList) {
@@ -15,15 +76,13 @@ export class AnilistMatch extends React.Component<AppState> {
       const mediaId = this.props.mediaSearchData.data.Media.id
       const mediaUrl = 'https://anilist.co/anime/' + mediaId
       const episodes = this.props.mediaSearchData.data.Media.episodes
-      const userProgress = this.props.userMediaListData.data.MediaList.progress
-      const userScore = this.props.userMediaListData.data.MediaList.score
       return (
         <div>
           <p>Closest match:</p>
           <div id="content-block">
             <img id="anilist-match--image" width="100" src={imageUrl} />
             <div id="content-ui">
-              <div id="content-ui--title" data-mediaId={mediaId}>
+              <div id="content-ui--title">
               <a id="title-link" href={mediaUrl}>{title}</a></div>
               <div id="content-ui--total-episodes">Total Episodes: {episodes}</div>
               <div id="content-ui--progress">
@@ -32,14 +91,21 @@ export class AnilistMatch extends React.Component<AppState> {
                        id="episode-progress"
                        name="Episode Progress"
                        min="0" max={episodes}
-                       value={userProgress} />
+                       value={this.state.episodeProgress}
+                       onChange={this.handleEpisodeProgressChange} />
               </div>
               <div id="content-ui--score">
                 Score
-                <input type="number" id="score" name="Score" min="0" max="100" value={userScore} />
+                <input
+                  type="number"
+                  id="score"
+                  name="Score"
+                  min="0" max="100"
+                  value={this.state.userScore}
+                  onChange={this.handleUserScoreChange} />
               </div>
-              <button id="update-button">Update</button>
-              <div id="update-message"></div>
+              <button onClick={this.handleUpdateClick} id="update-button">{this.state.updateButtonText}</button>
+              { this.props.showUpdateComplete ? <div id="update-message">Updated!</div> : '' }
             </div>
           </div>
         </div>
@@ -53,24 +119,3 @@ export class AnilistMatch extends React.Component<AppState> {
     }
   }
 }
-
-// export function renderAnilistMatch (state: AppState) {
-//   const contentDetectionHtml = composeAnilistMatch(state)
-//   document.querySelector('#anilist-match').innerHTML = contentDetectionHtml
-//
-//   const updateButton: HTMLButtonElement = document.querySelector('#update-button')
-//   if (updateButton) {
-//     updateButton.onclick = function () {
-//       updateButton.innerHTML = 'Updating...'
-//
-//       const episodeProgress = (document.querySelector('#episode-progress') as HTMLInputElement).value
-//       const userScore = (document.querySelector('#score') as HTMLInputElement).value
-//       const mediaId = state.mediaSearchData.data.Media.id
-//       updateUserMediaNotes(mediaId, parseInt(episodeProgress), parseInt(userScore), state.accessToken)
-//         .then(() => {
-//           updateButton.innerHTML = 'Update'
-//           document.querySelector('#update-message').innerHTML = 'Updated!'
-//         })
-//     }
-//   }
-// }

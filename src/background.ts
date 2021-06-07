@@ -22,7 +22,7 @@ chrome.runtime.onInstalled.addListener(function () {
 // entire login function must be inside this file because service workers cannot import
 // modules until Chrome 93 (allegedly)
 // see https://stackoverflow.com/questions/66114920/service-worker-registration-failed-chrome-extension
-chrome.runtime.onMessage.addListener((message) => {
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   if (message == 'do-login') {
     const loginLink = 'https://anilist.co/api/v2/oauth/authorize?client_id=4552&response_type=token'
     chrome.identity.launchWebAuthFlow(
@@ -52,8 +52,10 @@ chrome.runtime.onMessage.addListener((message) => {
               iconUrl:'./images/icon128.png'
           };
           chrome.notifications.create(null, options);
+          sendResponse({ accessToken: accessToken })
         }
       }
     )
+    return true // needed for async message response; see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage
   }
 })

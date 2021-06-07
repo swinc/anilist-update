@@ -1,14 +1,19 @@
 import React from 'react'
 
-// import { querySearchMedia, queryUserMediaNotes } from '../lib/query-anilist'
-import { AppState } from '../lib/types'
+import { UserData } from '../lib/types'
+
+interface ContentDetectionProps {
+  mediaTitle: string,
+  userData: UserData,
+  onMediaSearch: Function
+}
 
 interface ContentDetectionState {
   searchString: string
 }
 
-export class ContentDetection extends React.Component<AppState, ContentDetectionState> {
-  constructor(props: AppState) {
+export class ContentDetection extends React.Component<ContentDetectionProps, ContentDetectionState> {
+  constructor(props: ContentDetectionProps) {
     super(props)
     this.state = { searchString: this.props.mediaTitle }
 
@@ -24,12 +29,7 @@ export class ContentDetection extends React.Component<AppState, ContentDetection
 
   handleSearchKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === 'Enter') {
-      alert('searching!')
-      // const mediaSearchData = await querySearchMedia(e.currentTarget.value)
-      // const mediaListData = await queryUserMediaNotes(
-      //   mediaSearchData.data.Media.id,
-      //   this.props.userData.data.Viewer.name
-      // )
+      this.props.onMediaSearch(e.currentTarget.value)
     }
   }
 

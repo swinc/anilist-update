@@ -1,25 +1,41 @@
 import React from 'react'
 
-import { AppState } from '../lib/types'
-import { renderPopup } from '../popup/popup'
+import { UserData } from '../lib/types'
 
-export class UserLoginMessage extends React.Component<AppState> {
-  constructor(props: AppState) {
+interface UserLoginProps {
+  accessToken: string,
+  userData: UserData,
+  onLogin: Function,
+  onLogout: Function
+}
+
+interface UserLoginState {
+  buttonText: string
+}
+
+export class UserLoginMessage extends React.Component<UserLoginProps, UserLoginState> {
+  constructor(props: UserLoginProps) {
     super(props)
+
+    this.state = {
+      buttonText: 'Login to Anilist.co'
+    }
+
     this.handleLoginClick = this.handleLoginClick.bind(this)
     this.handleLogoutClick = this.handleLogoutClick.bind(this)
   }
 
   handleLoginClick() {
-    const loginButton: HTMLButtonElement = document.querySelector('#anilist-login-button')
-    loginButton.innerHTML = 'Opening login window...'
-    chrome.runtime.sendMessage('do-login')
+    this.setState((prev) => {
+      return {
+        ...prev,
+        buttonText: 'Logging into Anilist...'
+      }
+    })
+    this.props.onLogin()
   }
 
-  handleLogoutClick() {
-    chrome.identity.clearAllCachedAuthTokens(() => {})
-    chrome.storage.sync.clear(async () => await renderPopup())
-  }
+  handleLogoutClick() { this.props.onLogout() }
 
   render() {
     if (this.props.accessToken !== null && this.props.userData?.data?.Viewer?.name) {
@@ -33,7 +49,11 @@ export class UserLoginMessage extends React.Component<AppState> {
       return (
         <div>
           <p>Your Anilist account is not connected.</p>
-          <p><button id="anilist-login-button" onClick={this.handleLoginClick}>Login to Anilist.co</button></p>
+          <p>
+            <button id="anilist-login-button"
+              onClick={this.handleLoginClick}>{this.state.buttonText}
+            </button>
+          </p>
         </div>
       )
     }
