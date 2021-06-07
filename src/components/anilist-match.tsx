@@ -56,19 +56,6 @@ export class AnilistMatch extends React.Component<AnilistMatchProps, AnilistMatc
     )
   }
 
-  componentWillReceiveProps(nextProps: AnilistMatchProps) {
-    if (nextProps.userMediaListData.data.MediaList.progress !== this.props.userMediaListData.data.MediaList.progress) {
-      this.setState((prev) => {
-        return { ...prev, episodeProgress: nextProps.userMediaListData.data.MediaList.progress }
-      })
-    }
-    if (nextProps.userMediaListData.data.MediaList.score !== this.props.userMediaListData.data.MediaList.score) {
-      this.setState((prev) => {
-        return { ...prev, userScore: nextProps.userMediaListData.data.MediaList.score }
-      })
-    }
-}
-
   render() {
     if (this.props.mediaSearchData && this.props.userMediaListData?.data.MediaList) {
       const title = this.props.mediaSearchData.data.Media.title.english

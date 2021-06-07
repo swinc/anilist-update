@@ -111,6 +111,7 @@ export class PopupApp extends React.Component<AppState, AppState> {
           userMediaListData={this.state.userMediaListData}
           onUserNotesUpdate={this.doUserNotesUpdate}
           showUpdateComplete={this.state.showUpdateComplete}
+          key={this.state.mediaSearchData.data.Media.id}
         />
       </div>
     )
