@@ -15,7 +15,7 @@
    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqDhqiRKeFKQnrLKgZbZp17U53gS3NwcQA0U66bgJeRE8PsUsKNgviMeAwRtFOGI/7GJe1b4ZYjGTJ5mxxmWp8FD9CdmpY7FAZD3wO6w55z1FdcQbyPQekECZOPPexRYeJffWGqdelTRbDLsIcdndVpjOww7YvFre2gxJwTeW6BdT3VUZoXu+mAl0gN0joXXrIYEl3E8e1Zp4mBc0kxa91AhhzlRAIZTYE8GuccWZi8pkT8rams/3AHl8il8YGK/AP2+GUYNuDYF0fuoQ6TQwgrcyJkApRfcs8JLgN7XXwLIWBvdieY9dT/fVDQC1UrTqKBI0Rh7ntC7+bgcZR6szpQIDAQAB",
    "content_scripts": [
      {
-       "matches": ["https://*.crunchyroll.com/*"],
+       "matches": ["https://*.crunchyroll.com/*", "https://*.hulu.com/*", "https://*.netflix.com/*"],
        "run_at": "document_idle",
        "js": ["content-script.js"]
      }
