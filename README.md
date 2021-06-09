@@ -2,7 +2,7 @@
 
 This is a beta (in development and undistributed!) Chrome extension for easily updating your [Anilist.co](https://anilist.co/) profile when you have completed watching a media item.
 
-Currently this extension only attempts to identify media titles on [crunchyroll.com](https://www.crunchyroll.com/), but integrating other sites is planned.
+Currently this extension only attempts to identify media titles on [crunchyroll.com](https://www.crunchyroll.com/), [hulu.com](https://www.hulu.com), and [netflix.com](https://www.netflix.com), but integrating other sites is planned.
 
 ## Download and Test
 
