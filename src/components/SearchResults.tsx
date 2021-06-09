@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { mediaSearchDataIsAvailable, userMediaNotesAreAvailable } from '../lib/state-queries'
 import { MediaData, MediaListData } from '../lib/types'
 
 interface SearchResultsProps {
@@ -21,8 +22,8 @@ export class SearchResults extends React.Component<SearchResultsProps, SearchRes
 
     this.state = {
       updateButtonText: 'Update',
-      episodeProgress: this.props.userMediaListData.data.MediaList.progress,
-      userScore: this.props.userMediaListData.data.MediaList.score
+      episodeProgress: this.props.userMediaListData?.data?.MediaList?.progress,
+      userScore: this.props.userMediaListData?.data?.MediaList?.score
     }
 
     this.handleEpisodeProgressChange = this.handleEpisodeProgressChange.bind(this)
@@ -57,7 +58,10 @@ export class SearchResults extends React.Component<SearchResultsProps, SearchRes
   }
 
   render() {
-    if (this.props.mediaSearchData && this.props.userMediaListData?.data.MediaList) {
+    if (
+      mediaSearchDataIsAvailable(this.props.mediaSearchData) &&
+      userMediaNotesAreAvailable(this.props.userMediaListData)
+    ) {
       const title = this.props.mediaSearchData.data.Media.title.english
       const imageUrl = this.props.mediaSearchData.data.Media.coverImage.medium
       const mediaId = this.props.mediaSearchData.data.Media.id
@@ -97,7 +101,7 @@ export class SearchResults extends React.Component<SearchResultsProps, SearchRes
           </div>
         </div>
       )
-    } else if (this.props.userMediaListData?.data?.MediaList === null) {
+    } else if (!userMediaNotesAreAvailable(this.props.userMediaListData)) {
       return (
         <p>This title is not on your list.</p>
       )

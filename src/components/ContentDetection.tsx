@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { userIsLoggedIn, mediaTitleIsDetected } from '../lib/state-queries'
 import { UserData } from '../lib/types'
 
 interface ContentDetectionProps {
@@ -34,9 +35,9 @@ export class ContentDetection extends React.Component<ContentDetectionProps, Con
   }
 
   render() {
-    if (!this.props.userData?.data?.Viewer?.name) { // no user data
+    if (!userIsLoggedIn(this.props.userData)) {
       return (<p></p>)
-    } else if (!this.props.mediaTitle) { // user data but no content data
+    } else if (!mediaTitleIsDetected(this.props.mediaTitle)) {
       return (
         <div>
           <p>No content detected.</p>
