@@ -4,23 +4,14 @@ function getMediaTitle() {
   let contentTitle: string = 'nothing'
 
   if (hostName == 'www.hulu.com') {
-    const span = document.querySelector('div.PlayerMetadata__title > div > div > span')
-    contentTitle = span.textContent
+    contentTitle = document.querySelector('div.PlayerMetadata__title > div > div > span').textContent
   } else if (hostName == 'www.crunchyroll.com' || hostName == 'beta.crunchyroll.com') {
-    // access page source
-    const generatedSource = new XMLSerializer().serializeToString(document)
-
-    // get episode title
-    const reMediaTitle = /<title>(.+?) Episode/ // https://regex101.com/r/zOb55Y/1
-    const matchesMediaTitle = generatedSource.match(reMediaTitle)
-
-    if (matchesMediaTitle) {
-      contentTitle = matchesMediaTitle[1]
-    }
+    contentTitle = document.querySelector('div.showmedia-header > h1 > a > span').textContent
+  } else if (hostName == 'www.netflix.com') {
+    contentTitle = document.querySelector('div.video-title > div > h4').textContent
   }
   return contentTitle
 }
-
 
 const hostName = window.location.hostname
 
