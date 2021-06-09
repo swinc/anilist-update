@@ -1,5 +1,6 @@
 import React from 'react'
 
+import { userIsLoggedIn } from '../lib/state-queries'
 import { UserData } from '../lib/types'
 
 interface UserLoginProps {
@@ -38,7 +39,7 @@ export class UserLoginMessage extends React.Component<UserLoginProps, UserLoginS
   handleLogoutClick() { this.props.onLogout() }
 
   render() {
-    if (this.props.accessToken !== null && this.props.userData?.data?.Viewer?.name) {
+    if (userIsLoggedIn(this.props.userData)) {
       return (
         <div>
           <p>Hello <span className='username'>{this.props.userData.data.Viewer.name}</span>!
