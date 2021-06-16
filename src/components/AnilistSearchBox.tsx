@@ -18,7 +18,7 @@ export function AnilistSearchBox(props: AnilistSearchBoxProps) {
 
   return (
     <p>Search Anilist:
-      <input type="text" value={searchString}
+      <input type="text" value={searchString ?? ''}
         onChange={handleInputChange} onKeyDown={handleSearchKeyDown} />
     </p>
   )

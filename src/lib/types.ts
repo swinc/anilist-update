@@ -1,8 +1,8 @@
 export interface AppState {
+  appIsLoading: boolean,
   accessToken: string,
   mediaSearchData: MediaData,
   mediaTitle: string,
-  searchBoxText: string,
   userData: UserData,
   userMediaListData: MediaListData,
   showUpdateComplete: boolean
