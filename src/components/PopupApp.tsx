@@ -11,7 +11,7 @@ import { LoggedInMessage } from '../components/LoggedInMessage'
 import { LoggedOutMessage } from '../components/LoggedOutMessage'
 import { MediaDetectionMessage } from '../components/MediaDetectionMessage'
 import { AnilistSearchBox } from '../components/AnilistSearchBox'
-import { SearchResults } from '../components/SearchResults'
+import { AnilistSearchResults } from '../components/AnilistSearchResults'
 import { AppState, UserData, SaveMediaListEntry } from '../lib/types'
 
 export class PopupApp extends React.Component<AppState, AppState> {
@@ -104,7 +104,7 @@ export class PopupApp extends React.Component<AppState, AppState> {
         }
         <MediaDetectionMessage mediaTitle={this.state.mediaTitle} />
         <AnilistSearchBox mediaTitle={this.state.mediaTitle} onMediaSearch={this.doMediaSearch} />
-        <SearchResults
+        <AnilistSearchResults
           mediaSearchData={this.state.mediaSearchData}
           userMediaListData={this.state.userMediaListData}
           onUserNotesUpdate={this.doUserNotesUpdate}
