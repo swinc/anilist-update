@@ -6,7 +6,9 @@ import {
   queryUserMediaNotes,
   updateUserMediaNotes
 } from '../lib/query-anilist'
-import { UserLoginMessage } from '../components/UserLoginMessage'
+import { userIsLoggedIn } from '../lib/state-queries'
+import { LoggedInMessage } from '../components/LoggedInMessage'
+import { LoggedOutMessage } from '../components/LoggedOutMessage'
 import { ContentDetection } from '../components/ContentDetection'
 import { SearchResults } from '../components/SearchResults'
 import { AppState, UserData, SaveMediaListEntry } from '../lib/types'
@@ -95,12 +97,10 @@ export class PopupApp extends React.Component<AppState, AppState> {
   render() {
     return (
       <div>
-        <UserLoginMessage
-          accessToken={this.state.accessToken}
-          userData={this.state.userData}
-          onLogin={this.doLogin}
-          onLogout={this.doLogout}
-        />
+        {userIsLoggedIn(this.state.userData) ?
+          <LoggedInMessage userData={this.state.userData} onLogout={this.doLogout} /> :
+          <LoggedOutMessage onLogin={this.doLogin} />
+        }
         <ContentDetection
           mediaTitle={this.state.mediaTitle}
           userData={this.state.userData}
