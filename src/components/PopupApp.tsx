@@ -9,7 +9,8 @@ import {
 import { userIsLoggedIn } from '../lib/state-queries'
 import { LoggedInMessage } from '../components/LoggedInMessage'
 import { LoggedOutMessage } from '../components/LoggedOutMessage'
-import { ContentDetection } from '../components/ContentDetection'
+import { MediaDetectionMessage } from '../components/MediaDetectionMessage'
+import { AnilistSearchBox } from '../components/AnilistSearchBox'
 import { SearchResults } from '../components/SearchResults'
 import { AppState, UserData, SaveMediaListEntry } from '../lib/types'
 
@@ -101,11 +102,8 @@ export class PopupApp extends React.Component<AppState, AppState> {
           <LoggedInMessage userData={this.state.userData} onLogout={this.doLogout} /> :
           <LoggedOutMessage onLogin={this.doLogin} />
         }
-        <ContentDetection
-          mediaTitle={this.state.mediaTitle}
-          userData={this.state.userData}
-          onMediaSearch={this.doMediaSearch}
-        />
+        <MediaDetectionMessage mediaTitle={this.state.mediaTitle} />
+        <AnilistSearchBox mediaTitle={this.state.mediaTitle} onMediaSearch={this.doMediaSearch} />
         <SearchResults
           mediaSearchData={this.state.mediaSearchData}
           userMediaListData={this.state.userMediaListData}
