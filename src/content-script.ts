@@ -1,7 +1,5 @@
-/* globals chrome, XMLSerializer */
-
 function getMediaTitle() {
-  let contentTitle: string = 'nothing'
+  let contentTitle: string = null
 
   if (hostName == 'www.hulu.com') {
     contentTitle = document.querySelector('div.PlayerMetadata__title > div > div > span').textContent

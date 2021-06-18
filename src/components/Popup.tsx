@@ -124,17 +124,17 @@ export function Popup() {
         }
         <MediaDetectionMessage mediaTitle={appState.mediaTitle} />
         { userIsLoggedIn(appState.userData) &&
-          <React.Fragment>
-            <AnilistSearchBox mediaTitle={appState.mediaTitle} onMediaSearch={doMediaSearch} />
-            <AnilistSearchResults
-              mediaSearchData={appState.mediaSearchData}
-              userMediaListData={appState.userMediaListData}
-              onUserNotesUpdate={doUserNotesUpdate}
-              showUpdateComplete={appState.showUpdateComplete}
-              key={appState.mediaSearchData?.data?.Media?.id}
-            />
-          </React.Fragment>
-       }
+          <AnilistSearchBox mediaTitle={appState.mediaTitle} onMediaSearch={doMediaSearch} />
+        }
+        { userIsLoggedIn(appState.userData) &&
+          <AnilistSearchResults
+            mediaSearchData={appState.mediaSearchData}
+            userMediaListData={appState.userMediaListData}
+            onUserNotesUpdate={doUserNotesUpdate}
+            showUpdateComplete={appState.showUpdateComplete}
+            key={appState.mediaSearchData?.data?.Media?.id}
+          />
+        }
       </div>
     )
   }

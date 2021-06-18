@@ -71,11 +71,12 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
         </div>
       </div>
     )
-  } else if (!userMediaNotesAreAvailable(props.userMediaListData)) {
+  } else if (mediaSearchDataIsAvailable(props.mediaSearchData) &&
+             !userMediaNotesAreAvailable(props.userMediaListData) ) {
     return (
       <p>This title is not on your list.</p>
     )
   } else { // no mediaData or no MediaListData
-    return (<p></p>)
+    return null
   }
 }
