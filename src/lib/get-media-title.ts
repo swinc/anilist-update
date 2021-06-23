@@ -1,22 +1,16 @@
-function getActiveTabId (): Promise<number | undefined> {
-  return new Promise((resolve) => {
-    // should only be one active tab
-    chrome.tabs.query({ active: true }, (tabsArray) => { resolve(tabsArray[0].id) })
-  })
-}
-
 export async function getMediaTitle (): Promise<string> {
-  return new Promise(async (resolve, reject) => {
-    const activeTabId = await getActiveTabId()
+  return new Promise(async (resolve) => {
+    const activeTabs = await chrome.tabs.query({ active: true })
+    const activeTabId = activeTabs[0].id
     if(typeof activeTabId === 'undefined') {
-      console.error('Error getting media title: activeTabId is undefined.')
-      reject()
-      return
+      console.error('Error in getMediaTitle(): activeTabId is undefined.')
+      return resolve('')
     }
-    try {
-      chrome.tabs.sendMessage(activeTabId, 'get-media-title', {}, resolve)
-    } catch (e) {
-      console.error(e)
-    }
+    chrome.tabs.sendMessage(activeTabId, 'get-media-title', {}, (response) => {
+      if (window.chrome.runtime.lastError) {
+        return resolve('')
+      }
+      resolve(response)
+    })
   })
 }
