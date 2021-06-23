@@ -2,9 +2,14 @@ body {
   background-color: rgb(11, 22, 34);
   color: #9FADBD;
   font-family: 'Overpass', sans-serif;
-  padding: 10px;
-  width: 400px;
   font-size: 0.95rem;
+  width: 400px;
+}
+
+#popup-app {
+  background-color: rgb(21,31,46);
+  padding: 10px;
+  border-radius: 10px;
 }
 
 a {
@@ -23,20 +28,8 @@ input {
   margin-left: 5px;
 }
 
-#anilist-match--image{
+#anilist-match-image{
   margin:5px
-}
-
-#popup-app {
-  background-color: rgb(21,31,46);
-  padding: 10px;
-  border-radius: 10px;
-}
-
-#welcome-text {
-  font-size: 1.2rem;
-  display: inline-block;
-  width: 50%;
 }
 
 #sign-out-link {
@@ -75,12 +68,4 @@ input {
 
 #progress {
   display: inline-block;
-}
-
-.u-bottom-margin {
-  margin-bottom: 1rem;
-}
-
-.hidden {
-  display: none;
 }

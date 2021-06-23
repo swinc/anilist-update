@@ -31,7 +31,7 @@ export interface MediaData {
       }
     }
   },
-  errors?: []
+  errors?: AnilistAPIError[]
 }
 
 export interface MediaListData {
@@ -52,6 +52,12 @@ export interface SaveMediaListEntry {
       score: number
     }
   }
+}
+
+export interface AnilistAPIError {
+  locations: [],
+  message: string,
+  status: number
 }
 
 export interface ParsedAuthData {

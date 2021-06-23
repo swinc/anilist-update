@@ -10,7 +10,7 @@ interface AnilistRequestInit extends RequestInit {
 
 // generic query function
 export function queryAnilist(query: string, variables: {}, accessToken: string | null): Promise<{}> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const url = 'https://graphql.anilist.co'
     const options: AnilistRequestInit = {
       method: 'POST',
@@ -33,8 +33,7 @@ export function queryAnilist(query: string, variables: {}, accessToken: string |
       .then(extractJson)
       .then((json: {}) => resolve(json))
       .catch((error) => {
-        console.error(error)
-        reject(error)
+        resolve(error)
       })
 
     async function extractJson(response: Response): Promise<{}> {
@@ -68,7 +67,6 @@ export function querySearchMedia(searchString: string): Promise<MediaData> {
     const variables = { search: searchString }
     queryAnilist(query, variables, null)
       .then((result) => { resolve(result as MediaData) })
-      .catch((error) => reject(error))
   })
 }
 
@@ -90,13 +88,6 @@ export function queryUserMediaNotes(mediaId: number, userName: string): Promise<
     const variables = { mediaId: mediaId, userName: userName }
     queryAnilist(query, variables, null)
       .then((response) => resolve(response as MediaListData))
-      .catch((errorResponse: MediaListData) => {
-        if (errorResponse.data.MediaList === null) {
-          resolve(null)
-        } else {
-          reject(errorResponse)
-        }
-      })
   })
 }
 
@@ -124,12 +115,11 @@ export function updateUserMediaNotes(
     const variables = { mediaId: mediaId, progress: progress, scoreRaw: score }
     queryAnilist(query, variables, accessToken)
       .then((result) => resolve(result as SaveMediaListEntry))
-      .catch((error) => reject(error))
   })
 }
 
 export function queryUserData(accessToken: string): Promise<UserData> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const query = `
       query {
         Viewer {
@@ -141,6 +131,5 @@ export function queryUserData(accessToken: string): Promise<UserData> {
     `
     queryAnilist(query, {}, accessToken)
       .then((response) => { resolve(response as UserData) })
-      .catch((error) => reject(error))
   })
 }

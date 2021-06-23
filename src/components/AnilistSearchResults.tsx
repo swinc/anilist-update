@@ -38,16 +38,17 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
     const mediaUrl = 'https://anilist.co/anime/' + mediaId
     const episodes = props.mediaSearchData!.data.Media.episodes
     return (
-      <div>
+      <div id="anilist-search-results">
         <p>Closest match:</p>
-        <div id="content-block">
-          <img id="anilist-match--image" width="100" src={imageUrl} />
+        <div id="search-content">
+          <img id="anilist-match-image" width="100" src={imageUrl} />
           <div id="content-ui">
             <div id="content-ui--title">
-            <a id="title-link" href={mediaUrl}>{title}</a></div>
+              <a id="title-link" href={mediaUrl}>{title}</a>
+            </div>
             <div id="content-ui--total-episodes">Total Episodes: {episodes}</div>
             <div id="content-ui--progress">
-              Episode Progress
+              <span>Episode Progress</span>
               <input type="number"
                      id="episode-progress"
                      name="Episode Progress"
@@ -56,7 +57,7 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
                      onChange={handleEpisodeProgressChange} />
             </div>
             <div id="content-ui--score">
-              Score
+              <span>Score</span>
               <input
                 type="number"
                 id="score"
@@ -73,9 +74,12 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
     )
   } else if (mediaSearchDataIsAvailable(props.mediaSearchData) &&
              !userMediaNotesAreAvailable(props.userMediaListData) ) {
+    const title = props.mediaSearchData!.data.Media.title.english
     return (
-      <p>This title is not on your list.</p>
+      <p id="title-not-on-user-list">{`The Anilist title ${title} is not on your list.`}</p>
     )
+  } else if(props.mediaSearchData?.errors && props.mediaSearchData.errors[0].status === 404) {
+    return <p id="title-not-found">Title not found on Anilist.</p>
   } else { // no mediaData or no MediaListData
     return null
   }

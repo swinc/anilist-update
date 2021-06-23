@@ -83,7 +83,7 @@ export function Popup() {
   const doMediaSearch = async (searchString: string) => {
     const mediaSearchData = await querySearchMedia(searchString)
     let mediaListData = null
-    if(userIsLoggedIn(appState.userData)) {
+    if(userIsLoggedIn(appState.userData) && mediaSearchData?.data?.Media?.id) {
       mediaListData = await queryUserMediaNotes(
         mediaSearchData.data.Media.id, appState.userData!.data.Viewer.name
       )
@@ -120,18 +120,16 @@ export function Popup() {
   }
 
   if(appState.appIsLoading) {
-    return <p>Loading...</p>
+    return <div id="app-loading">Loading...</div>
   } else {
     return (
-      <div>
+      <React.Fragment>
         {userIsLoggedIn(appState.userData) ?
           <LoggedInMessage userData={appState.userData!} onLogout={doLogout} /> :
-          <LoggedOutMessage onLogin={doLogin} />
-        }
+          <LoggedOutMessage onLogin={doLogin} />}
         <MediaDetectionMessage mediaTitle={appState.mediaTitle} />
-        { userIsLoggedIn(appState.userData) &&
-          <AnilistSearchBox mediaTitle={appState.mediaTitle} onMediaSearch={doMediaSearch} />
-        }
+        {userIsLoggedIn(appState.userData) &&
+          <AnilistSearchBox mediaTitle={appState.mediaTitle} onMediaSearch={doMediaSearch} />}
         { userIsLoggedIn(appState.userData) &&
           <AnilistSearchResults
             mediaSearchData={appState.mediaSearchData}
@@ -141,7 +139,7 @@ export function Popup() {
             key={appState.mediaSearchData?.data?.Media?.id}
           />
         }
-      </div>
+      </React.Fragment>
     )
   }
 }
