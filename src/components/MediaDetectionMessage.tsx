@@ -10,6 +10,6 @@ export function MediaDetectionMessage(props: MediaDetectionMessageProps) {
   if (mediaTitleIsDetected(props.mediaTitle)) {
     return <p>You're watching {props.mediaTitle}.</p>
   } else {
-    return <p>No content detected.</p>
+    return <p id="no-content">No content detected.</p>
   }
 }
