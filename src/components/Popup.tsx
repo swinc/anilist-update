@@ -14,7 +14,7 @@ import { LoggedOutMessage } from '../components/LoggedOutMessage'
 import { MediaDetectionMessage } from '../components/MediaDetectionMessage'
 import { AnilistSearchBox } from '../components/AnilistSearchBox'
 import { AnilistSearchResults } from '../components/AnilistSearchResults'
-import { AppState, UserData, MediaData, MediaListData, SaveMediaListEntry } from '../lib/types'
+import { AppState } from '../lib/types'
 
 export function Popup() {
   const initialState: AppState = {
@@ -32,13 +32,13 @@ export function Popup() {
   useEffect(() => {
     const getInitialState = async () => {
       const accessToken = await getStoredAccessToken()
-      let userData = null as UserData
+      let userData = null
       if(accessToken) {
         userData = await queryUserData(accessToken)
       }
       const mediaTitle = await getMediaTitle()
-      let mediaData = null as MediaData
-      let userMediaListData = null as MediaListData
+      let mediaData = null
+      let userMediaListData = null
       if (mediaTitle && userData) {
         mediaData = await querySearchMedia(mediaTitle)
         userMediaListData = await queryUserMediaNotes(mediaData.data.Media.id, userData.data.Viewer.name)
@@ -58,7 +58,7 @@ export function Popup() {
 
   const doLogin = () => {
     chrome.runtime.sendMessage('do-login', async (response) => {
-      let userData = null as UserData
+      let userData = null
       if (response.accessToken) {
         userData = await queryUserData(response.accessToken)
       }
@@ -82,10 +82,12 @@ export function Popup() {
 
   const doMediaSearch = async (searchString: string) => {
     const mediaSearchData = await querySearchMedia(searchString)
-    const mediaListData = await queryUserMediaNotes(
-      mediaSearchData.data.Media.id,
-      appState.userData.data.Viewer.name
-    )
+    let mediaListData = null
+    if(userIsLoggedIn(appState.userData)) {
+      mediaListData = await queryUserMediaNotes(
+        mediaSearchData.data.Media.id, appState.userData!.data.Viewer.name
+      )
+    }
     setAppState({
       ...appState,
       mediaSearchData: mediaSearchData,
@@ -94,15 +96,19 @@ export function Popup() {
   }
 
   const doUserNotesUpdate = async (episodeProgress: string, userScore: string) => {
-    const mediaId = appState.mediaSearchData.data.Media.id
+    const mediaId = appState.mediaSearchData?.data.Media.id
+    if(typeof mediaId === 'undefined' || typeof appState.accessToken !== 'string') {
+      console.error('Cannot update user notes because mediaId or accessToken are undefined.')
+      return
+    }
     updateUserMediaNotes(mediaId, parseInt(episodeProgress), parseInt(userScore), appState.accessToken)
-      .then((response: SaveMediaListEntry) => {
+      .then((response) => {
         setAppState({
           ...appState,
           userMediaListData: {
             data: {
               MediaList: {
-                ...appState.userMediaListData.data.MediaList,
+                ...appState.userMediaListData!.data.MediaList,
                 progress: response.data.SaveMediaListEntry.progress,
                 score: response.data.SaveMediaListEntry.score
               }
@@ -119,7 +125,7 @@ export function Popup() {
     return (
       <div>
         {userIsLoggedIn(appState.userData) ?
-          <LoggedInMessage userData={appState.userData} onLogout={doLogout} /> :
+          <LoggedInMessage userData={appState.userData!} onLogout={doLogout} /> :
           <LoggedOutMessage onLogin={doLogin} />
         }
         <MediaDetectionMessage mediaTitle={appState.mediaTitle} />

@@ -1,10 +1,10 @@
 export interface AppState {
   appIsLoading: boolean,
-  accessToken: string,
-  mediaSearchData: MediaData,
-  mediaTitle: string,
-  userData: UserData,
-  userMediaListData: MediaListData,
+  accessToken: string | null,
+  mediaSearchData: MediaData | null,
+  mediaTitle: string | null,
+  userData: UserData | null,
+  userMediaListData: MediaListData | null,
   showUpdateComplete: boolean
 }
 

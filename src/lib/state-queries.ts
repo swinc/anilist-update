@@ -1,6 +1,6 @@
 import { UserData, MediaData, MediaListData } from './types'
 
-export function userIsLoggedIn(userData: UserData): boolean {
+export function userIsLoggedIn(userData: UserData | null): boolean {
   if (Number.isInteger(userData?.data?.Viewer?.id) && userData?.data?.Viewer?.name !== null) {
     return true
   } else {
@@ -8,7 +8,7 @@ export function userIsLoggedIn(userData: UserData): boolean {
   }
 }
 
-export function mediaTitleIsDetected(mediaTitle: string): boolean {
+export function mediaTitleIsDetected(mediaTitle: any): boolean {
   if (typeof mediaTitle === 'string' && mediaTitle.length > 0) {
     return true;
   } else {
@@ -16,7 +16,7 @@ export function mediaTitleIsDetected(mediaTitle: string): boolean {
   }
 }
 
-export function mediaSearchDataIsAvailable(mediaData: MediaData) {
+export function mediaSearchDataIsAvailable(mediaData: any) {
   if (
     typeof mediaData?.data?.Media?.coverImage?.medium === 'string' &&
     mediaData?.data?.Media?.coverImage?.medium.length > 0 &&
@@ -30,7 +30,7 @@ export function mediaSearchDataIsAvailable(mediaData: MediaData) {
   }
 }
 
-export function userMediaNotesAreAvailable(userMediaListData: MediaListData) {
+export function userMediaNotesAreAvailable(userMediaListData: any) {
   if (
     Number.isInteger(userMediaListData?.data?.MediaList?.progress) &&
     Number.isInteger(userMediaListData?.data?.MediaList?.score)

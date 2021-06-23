@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 interface AnilistSearchBoxProps {
-  mediaTitle: string,
+  mediaTitle: string | null,
   onMediaSearch: Function
 }
 

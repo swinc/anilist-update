@@ -4,8 +4,8 @@ import { mediaSearchDataIsAvailable, userMediaNotesAreAvailable } from '../lib/s
 import { MediaData, MediaListData } from '../lib/types'
 
 interface AnilistSearchResultsProps {
-  mediaSearchData: MediaData,
-  userMediaListData: MediaListData
+  mediaSearchData: MediaData | null,
+  userMediaListData: MediaListData | null
   onUserNotesUpdate: Function,
   showUpdateComplete: boolean
 }
@@ -32,11 +32,11 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
     mediaSearchDataIsAvailable(props.mediaSearchData) &&
     userMediaNotesAreAvailable(props.userMediaListData)
   ) {
-    const title = props.mediaSearchData.data.Media.title.english
-    const imageUrl = props.mediaSearchData.data.Media.coverImage.medium
-    const mediaId = props.mediaSearchData.data.Media.id
+    const title = props.mediaSearchData!.data.Media.title.english
+    const imageUrl = props.mediaSearchData!.data.Media.coverImage.medium
+    const mediaId = props.mediaSearchData!.data.Media.id
     const mediaUrl = 'https://anilist.co/anime/' + mediaId
-    const episodes = props.mediaSearchData.data.Media.episodes
+    const episodes = props.mediaSearchData!.data.Media.episodes
     return (
       <div>
         <p>Closest match:</p>

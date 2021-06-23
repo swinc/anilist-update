@@ -28,32 +28,43 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     chrome.identity.launchWebAuthFlow(
       { url: loginLink, interactive: true },
       function (responseUrl) {
+        if (typeof responseUrl !== "string") {
+          console.error('Login error: authentication response url was invalid.')
+          sendResponse({ accessToken: null })
+          return
+        }
         // https://regex101.com/r/jDz0sC/1
         const accessTokenRegEx = /access_token=(.+?)(&|$)/
         const tokenTypeRegEx = /token_type=(.+?)(&|$)/
         const expiresInRegEx = /expires_in=(.+?)(&|$)/
+        let matches = responseUrl.match(accessTokenRegEx) // first captured group
+        const accessToken = matches ? matches[1] : null
 
-        const accessToken = responseUrl.match(accessTokenRegEx)[1] // first captured group
-        const tokenType = responseUrl.match(tokenTypeRegEx)[1]
-        const expiresIn = responseUrl.match(expiresInRegEx)[1]
+        matches = responseUrl.match(tokenTypeRegEx)
+        const tokenType = matches ? matches[1] : null
 
-        if (!accessToken) {
-          console.log("Login error.")
-        } else {
-          chrome.storage.sync.set({
-            accessToken: accessToken,
-            tokenType: tokenType,
-            expiresIn: expiresIn
-          })
-          const options = {
-              type: 'basic',
-              title: 'Anilist',
-              message: 'You have successfully logged into Anilist.',
-              iconUrl:'./images/icon128.png'
-          };
-          chrome.notifications.create(null, options);
-          sendResponse({ accessToken: accessToken })
+        matches = responseUrl.match(expiresInRegEx)
+        const expiresIn = matches ? matches[1] : null
+
+        if (typeof accessToken !== 'string') {
+          console.error('Login error: accessToken could not be retrieved.')
+          sendResponse({ accessToken: null })
+          return
         }
+
+        chrome.storage.sync.set({
+          accessToken: accessToken,
+          tokenType: tokenType,
+          expiresIn: expiresIn
+        })
+        const options = {
+            type: 'basic',
+            title: 'Anilist',
+            message: 'You have successfully logged into Anilist.',
+            iconUrl:'./images/icon128.png'
+        };
+        chrome.notifications.create('', options);
+        sendResponse({ accessToken: accessToken })
       }
     )
     return true // needed for async message response; see https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/runtime/onMessage

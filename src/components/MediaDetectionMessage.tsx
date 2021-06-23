@@ -3,7 +3,7 @@ import React from 'react'
 import { mediaTitleIsDetected } from '../lib/state-queries'
 
 interface MediaDetectionMessageProps {
-  mediaTitle: string,
+  mediaTitle: string | null,
 }
 
 export function MediaDetectionMessage(props: MediaDetectionMessageProps) {

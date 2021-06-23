@@ -1,4 +1,4 @@
-import { MediaData, UserData, MediaListData } from './types'
+import { MediaData, UserData, MediaListData, SaveMediaListEntry } from './types'
 
 interface AnilistRequestInit extends RequestInit {
   headers: {
@@ -9,7 +9,7 @@ interface AnilistRequestInit extends RequestInit {
 }
 
 // generic query function
-export function queryAnilist(query: string, variables: {}, accessToken: string): Promise<{}> {
+export function queryAnilist(query: string, variables: {}, accessToken: string | null): Promise<{}> {
   return new Promise((resolve, reject) => {
     const url = 'https://graphql.anilist.co'
     const options: AnilistRequestInit = {
@@ -37,7 +37,7 @@ export function queryAnilist(query: string, variables: {}, accessToken: string):
         reject(error)
       })
 
-    function extractJson(response: Response): Promise<{}> {
+    async function extractJson(response: Response): Promise<{}> {
       return response.json().then(function (json) {
         return response.ok ? json : Promise.reject(json)
       })
@@ -67,12 +67,12 @@ export function querySearchMedia(searchString: string): Promise<MediaData> {
     `
     const variables = { search: searchString }
     queryAnilist(query, variables, null)
-      .then((result: MediaData) => resolve(result))
+      .then((result) => { resolve(result as MediaData) })
       .catch((error) => reject(error))
   })
 }
 
-export function queryUserMediaNotes(mediaId: number, userName: string): Promise<MediaListData> {
+export function queryUserMediaNotes(mediaId: number, userName: string): Promise<MediaListData | null> {
   return new Promise((resolve, reject) => {
     if (!Number.isInteger(mediaId) || !userName) {
       reject(new Error('invalid values for mediaId or userName'))
@@ -89,7 +89,7 @@ export function queryUserMediaNotes(mediaId: number, userName: string): Promise<
     `
     const variables = { mediaId: mediaId, userName: userName }
     queryAnilist(query, variables, null)
-      .then((response: MediaListData) => resolve(response))
+      .then((response) => resolve(response as MediaListData))
       .catch((errorResponse: MediaListData) => {
         if (errorResponse.data.MediaList === null) {
           resolve(null)
@@ -105,7 +105,7 @@ export function updateUserMediaNotes(
   progress: number,
   score: number,
   accessToken: string
-) {
+): Promise<SaveMediaListEntry> {
   return new Promise((resolve, reject) => {
     if (isNaN(mediaId) || isNaN(progress) || isNaN(score) || !accessToken) {
       reject(new Error(`ERROR: invalid value for mediaId (${mediaId}), progress (${progress}),
@@ -123,7 +123,7 @@ export function updateUserMediaNotes(
     `
     const variables = { mediaId: mediaId, progress: progress, scoreRaw: score }
     queryAnilist(query, variables, accessToken)
-      .then((result) => resolve(result))
+      .then((result) => resolve(result as SaveMediaListEntry))
       .catch((error) => reject(error))
   })
 }
@@ -139,8 +139,8 @@ export function queryUserData(accessToken: string): Promise<UserData> {
         }
       }
     `
-    queryAnilist(query, null, accessToken)
-      .then((response: UserData) => { resolve(response) })
+    queryAnilist(query, {}, accessToken)
+      .then((response) => { resolve(response as UserData) })
       .catch((error) => reject(error))
   })
 }
