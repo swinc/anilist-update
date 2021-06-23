@@ -1,9 +1,36 @@
 body {
-  border: 1px solid gray;
+  background-color: rgb(11, 22, 34);
+  color: #9FADBD;
   font-family: 'Overpass', sans-serif;
   padding: 10px;
   width: 400px;
   font-size: 0.95rem;
+}
+
+a {
+  color:#3DB4F2;
+}
+
+#logout-link {
+  margin-left: 5px;
+}
+
+#update-button {
+  margin-top: 7px;
+}
+
+input {
+  margin-left: 5px;
+}
+
+#anilist-match--image{
+  margin:5px
+}
+
+#popup-app {
+  background-color: rgb(21,31,46);
+  padding: 10px;
+  border-radius: 10px;
 }
 
 #welcome-text {
@@ -29,6 +56,22 @@ body {
 #content-name {
   vertical-align: top;
 }
+
+#title-link {
+  padding:2px;
+}
+
+#content-ui--total-episodes {
+    padding:2px;
+  }
+
+#content-ui--progress {
+    padding:2px;
+  }
+
+#content-ui--score {
+  padding:2px;
+      }
 
 #progress {
   display: inline-block;
