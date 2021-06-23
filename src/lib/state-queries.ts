@@ -1,7 +1,7 @@
-import { UserData, MediaData, MediaListData } from './types'
+import { User } from '../types/user-types'
 
-export function userIsLoggedIn(userData: UserData | null): boolean {
-  if (Number.isInteger(userData?.data?.Viewer?.id) && userData?.data?.Viewer?.name !== null) {
+export function userIsLoggedIn(userData: User | null): boolean {
+  if (Number.isInteger(userData?.id) && typeof userData?.name === 'string') {
     return true
   } else {
     return false

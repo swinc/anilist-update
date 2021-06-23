@@ -1,47 +1,42 @@
+import { User } from './user-types'
+
 export interface AppState {
   appIsLoading: boolean,
   accessToken: string | null,
   mediaSearchData: MediaData | null,
   mediaTitle: string | null,
-  userData: UserData | null,
+  user: User | null,
   userMediaListData: MediaListData | null,
   showUpdateComplete: boolean
 }
 
-export interface UserData {
-  data: {
-    Viewer: {
-      id: number,
-      name: string,
-      siteUrl: string
-    }
-  }
-}
-
 export interface MediaData {
   data: {
-    Media: {
-      coverImage: {
-        medium: string
-      },
-      episodes: number,
-      id: number,
-      title: {
-        english: string
-      }
-    }
+    Media: null | MediaDataFields
   },
   errors?: AnilistAPIError[]
 }
 
+type MediaDataFields = {
+  coverImage: {
+    medium: string
+  },
+  episodes: number,
+  id: number,
+  title: {
+    english: string
+  }
+}
+
 export interface MediaListData {
   data: {
-    MediaList: {
-      progress: number,
-      score: number,
-      status: string
-    }
+    MediaList: null | MediaListDataFields
   }
+}
+
+type MediaListDataFields = {
+  progress: number,
+  score: number
 }
 
 export interface SaveMediaListEntry {

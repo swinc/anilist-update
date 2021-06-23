@@ -1,4 +1,6 @@
-import { MediaData, UserData, MediaListData, SaveMediaListEntry } from './types'
+import { MediaData, MediaListData, SaveMediaListEntry } from '../types/types'
+import { AnilistUserResponse, User } from '../types/user-types'
+import { notFoundError } from './conditionals'
 
 interface AnilistRequestInit extends RequestInit {
   headers: {
@@ -10,7 +12,7 @@ interface AnilistRequestInit extends RequestInit {
 
 // generic query function
 export function queryAnilist(query: string, variables: {}, accessToken: string | null): Promise<{}> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const url = 'https://graphql.anilist.co'
     const options: AnilistRequestInit = {
       method: 'POST',
@@ -32,8 +34,13 @@ export function queryAnilist(query: string, variables: {}, accessToken: string |
     fetch(url, options)
       .then(extractJson)
       .then((json: {}) => resolve(json))
-      .catch((error) => {
-        resolve(error)
+      .catch((errorResponse) => {
+        debugger
+        if (notFoundError(errorResponse)) {
+          return resolve(errorResponse as MediaData)
+        }
+        console.error(errorResponse)
+        reject(errorResponse)
       })
 
     async function extractJson(response: Response): Promise<{}> {
@@ -44,54 +51,54 @@ export function queryAnilist(query: string, variables: {}, accessToken: string |
   })
 }
 
-export function querySearchMedia(searchString: string): Promise<MediaData> {
-  return new Promise((resolve, reject) => {
-    if (!searchString || searchString === '') {
-      reject(new Error('invalid value for searchString'))
-      return
-    }
-    const query = `
-      query ($search: String) {
-        Media (search: $search, type: ANIME) {
-          id
-          title {
-            english
-          }
-          episodes
-          coverImage {
-            medium
-          }
+export async function querySearchMedia(searchString: string): Promise<MediaData> {
+  const emptyMediaData = { data: { Media: null } }
+  if (!searchString || searchString === '') {
+    console.error('invalid value for searchString')
+    return emptyMediaData
+  }
+  const query = `
+    query ($search: String) {
+      Media (search: $search, type: ANIME) {
+        id
+        title {
+          english
+        }
+        episodes
+        coverImage {
+          medium
         }
       }
-    `
-    const variables = { search: searchString }
-    queryAnilist(query, variables, null)
-      .then((result) => { resolve(result as MediaData) })
-  })
-}
-
-export function queryUserMediaNotes(mediaId: number, userName: string): Promise<MediaListData | null> {
-  return new Promise((resolve, reject) => {
-    if (!Number.isInteger(mediaId) || !userName) {
-      reject(new Error('invalid values for mediaId or userName'))
-      return
     }
-    const query = `
-      query ($mediaId: Int, $userName: String) {
-        MediaList (mediaId: $mediaId, userName: $userName) {
-          status
-          progress
-          score
-        }
-      }
-    `
-    const variables = { mediaId: mediaId, userName: userName }
-    queryAnilist(query, variables, null)
-      .then((response) => resolve(response as MediaListData))
-  })
+  `
+  const variables = { search: searchString }
+  const result = await queryAnilist(query, variables, null) as MediaData
+
+  if (result.data.Media?.title.english === null) {
+    return emptyMediaData
+  }
+  return result
 }
 
-export function updateUserMediaNotes(
+export async function queryUserMediaNotes(mediaId: any, userName: any): Promise<MediaListData> {
+  if (!Number.isInteger(mediaId) || typeof userName !== 'string') {
+    console.error('Invalid values for mediaId or userName')
+    return { data: { MediaList: null } }
+  }
+  const query = `
+    query ($mediaId: Int, $userName: String) {
+      MediaList (mediaId: $mediaId, userName: $userName) {
+        progress
+        score
+      }
+    }
+  `
+  const variables = { mediaId: mediaId, userName: userName }
+  const result = await queryAnilist(query, variables, null)
+  return result as MediaListData
+}
+
+export async function updateUserMediaNotes(
   mediaId: number,
   progress: number,
   score: number,
@@ -118,18 +125,20 @@ export function updateUserMediaNotes(
   })
 }
 
-export function queryUserData(accessToken: string): Promise<UserData> {
-  return new Promise((resolve) => {
-    const query = `
-      query {
-        Viewer {
-          id
-          name
-          siteUrl
-        }
+export async function queryUserData(accessToken: string): Promise<User> {
+  const query = `
+    query {
+      Viewer {
+        id
+        name
+        siteUrl
       }
-    `
-    queryAnilist(query, {}, accessToken)
-      .then((response) => { resolve(response as UserData) })
-  })
+    }
+  `
+  const result = await queryAnilist(query, {}, accessToken) as AnilistUserResponse
+  return {
+    id: result.data.Viewer.id,
+    name: result.data.Viewer.name,
+    siteUrl: result.data.Viewer.siteUrl
+  }
 }

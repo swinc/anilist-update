@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 import { mediaSearchDataIsAvailable, userMediaNotesAreAvailable } from '../lib/state-queries'
-import { MediaData, MediaListData } from '../lib/types'
+import { MediaData, MediaListData } from '../types/types'
 
 interface AnilistSearchResultsProps {
   mediaSearchData: MediaData | null,
@@ -32,11 +32,11 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
     mediaSearchDataIsAvailable(props.mediaSearchData) &&
     userMediaNotesAreAvailable(props.userMediaListData)
   ) {
-    const title = props.mediaSearchData!.data.Media.title.english
-    const imageUrl = props.mediaSearchData!.data.Media.coverImage.medium
-    const mediaId = props.mediaSearchData!.data.Media.id
+    const title = props.mediaSearchData!.data.Media?.title.english
+    const imageUrl = props.mediaSearchData!.data.Media?.coverImage.medium
+    const mediaId = props.mediaSearchData!.data.Media?.id
     const mediaUrl = 'https://anilist.co/anime/' + mediaId
-    const episodes = props.mediaSearchData!.data.Media.episodes
+    const episodes = props.mediaSearchData!.data.Media?.episodes
     return (
       <div id="anilist-search-results">
         <p>Closest match:</p>
@@ -74,7 +74,7 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
     )
   } else if (mediaSearchDataIsAvailable(props.mediaSearchData) &&
              !userMediaNotesAreAvailable(props.userMediaListData) ) {
-    const title = props.mediaSearchData!.data.Media.title.english
+    const title = props.mediaSearchData!.data.Media?.title.english
     return (
       <p id="title-not-on-user-list">{`The Anilist title ${title} is not on your list.`}</p>
     )
