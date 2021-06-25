@@ -1,48 +1,42 @@
-import { MediaData, MediaListData, SaveMediaListEntry, AnilistRequestInit } from '../types/types'
+import axios, { AxiosRequestConfig } from 'axios'
+
+import { MediaData, MediaListData, SaveMediaListEntry } from '../types/types'
 import { AnilistUserResponse, User } from '../types/user-types'
-import { notFoundError } from './conditionals'
 import { CustomError } from './anilist-update-errors'
 
-// generic query function
-export function queryAnilist(query: string, variables: {}, accessToken: string | null): Promise<{}> {
-  return new Promise((resolve, reject) => {
-    const url = 'https://graphql.anilist.co'
-    const options: AnilistRequestInit = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-      body: JSON.stringify({
-        query: query,
-        variables: variables
-      })
+/**
+ * generic query function for Anilist API
+ * throws CustomError if unable to complete
+ */
+export async function queryAnilist(
+  query: string,
+  variables: {},
+  accessToken: string | null
+): Promise<{}> {
+  const requestConfig: AxiosRequestConfig = {
+    method: 'post',
+    url: 'https://graphql.anilist.co',
+    data: {
+      query: query,
+      variables: variables
     }
+  }
+  if (typeof accessToken === 'string') { // add to request
+    Object.assign(requestConfig, {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    })
+  }
 
-    if (accessToken) { // add to request
-      options.headers.Authorization = 'Bearer ' + accessToken
-    }
+  const response = await axios(requestConfig)
 
-    // make the API request
-    fetch(url, options)
-      .then(extractJson)
-      .then((json: {}) => resolve(json))
-      .catch((errorResponse) => {
-        debugger
-        if (notFoundError(errorResponse)) {
-          console.log(errorResponse)
-          return resolve(errorResponse as MediaData)
-        }
-        console.error(errorResponse)
-        reject(errorResponse)
-      })
+  if(Array.isArray(response.data.errors)) { // something went wrong
+    throw new CustomError({
+      message: `Error querying Anilist API: ${response.data.errors[0].message}`,
+      data: response.data.errors
+    })
+  }
 
-    async function extractJson(response: Response): Promise<{}> {
-      return response.json().then(function (json) {
-        return response.ok ? json : Promise.reject(json)
-      })
-    }
-  })
+  return response.data
 }
 
 export async function querySearchMedia(searchString: string): Promise<MediaData> {
@@ -119,9 +113,6 @@ export async function updateUserMediaNotes(
   })
 }
 
-/**
- * throws CustomError if unable to fetch user data
- */
 export async function fetchUserData(accessToken: string): Promise<User> {
   const query = `
     query {
@@ -133,13 +124,6 @@ export async function fetchUserData(accessToken: string): Promise<User> {
     }
   `
   const result = await queryAnilist(query, {}, accessToken) as AnilistUserResponse
-
-  if(Array.isArray(result.errors)) { // something went wrong
-    throw new CustomError({
-      message: `Unable to fetch user data: ${result.errors[0].message}`,
-      data: result.errors
-    })
-  }
 
   return {
     id: result.data.Viewer.id,

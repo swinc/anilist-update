@@ -56,11 +56,3 @@ export interface ParsedAuthData {
   tokenType: string,
   expiresIn: string
 }
-
-export interface AnilistRequestInit extends RequestInit {
-  headers: {
-    'Content-Type': string,
-    Accept: string,
-    Authorization?: string
-  }
-}
