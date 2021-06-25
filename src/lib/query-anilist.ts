@@ -1,14 +1,7 @@
-import { MediaData, MediaListData, SaveMediaListEntry } from '../types/types'
+import { MediaData, MediaListData, SaveMediaListEntry, AnilistRequestInit } from '../types/types'
 import { AnilistUserResponse, User } from '../types/user-types'
 import { notFoundError } from './conditionals'
-
-interface AnilistRequestInit extends RequestInit {
-  headers: {
-    'Content-Type': string,
-    Accept: string,
-    Authorization?: string
-  }
-}
+import { CustomError } from './anilist-update-errors'
 
 // generic query function
 export function queryAnilist(query: string, variables: {}, accessToken: string | null): Promise<{}> {
@@ -37,6 +30,7 @@ export function queryAnilist(query: string, variables: {}, accessToken: string |
       .catch((errorResponse) => {
         debugger
         if (notFoundError(errorResponse)) {
+          console.log(errorResponse)
           return resolve(errorResponse as MediaData)
         }
         console.error(errorResponse)
@@ -125,7 +119,10 @@ export async function updateUserMediaNotes(
   })
 }
 
-export async function queryUserData(accessToken: string): Promise<User> {
+/**
+ * throws CustomError if unable to fetch user data
+ */
+export async function fetchUserData(accessToken: string): Promise<User> {
   const query = `
     query {
       Viewer {
@@ -136,6 +133,14 @@ export async function queryUserData(accessToken: string): Promise<User> {
     }
   `
   const result = await queryAnilist(query, {}, accessToken) as AnilistUserResponse
+
+  if(Array.isArray(result.errors)) { // something went wrong
+    throw new CustomError({
+      message: `Unable to fetch user data: ${result.errors[0].message}`,
+      data: result.errors
+    })
+  }
+
   return {
     id: result.data.Viewer.id,
     name: result.data.Viewer.name,

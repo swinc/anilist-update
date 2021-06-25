@@ -1,3 +1,5 @@
+import { AnilistAPIError } from './anilist-api-responses'
+
 export type User = {
   id: number,
   name: string,
@@ -7,5 +9,6 @@ export type User = {
 export type AnilistUserResponse = {
   data: {
     Viewer: User
-  }
+  },
+  errors?: AnilistAPIError[]
 }

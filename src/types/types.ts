@@ -1,4 +1,5 @@
 import { User } from './user-types'
+import { AnilistAPIError } from './anilist-api-responses'
 
 export interface AppState {
   appIsLoading: boolean,
@@ -49,15 +50,17 @@ export interface SaveMediaListEntry {
   }
 }
 
-export interface AnilistAPIError {
-  locations: [],
-  message: string,
-  status: number
-}
-
 export interface ParsedAuthData {
   responseUrl: string,
   accessToken: string,
   tokenType: string,
   expiresIn: string
+}
+
+export interface AnilistRequestInit extends RequestInit {
+  headers: {
+    'Content-Type': string,
+    Accept: string,
+    Authorization?: string
+  }
 }

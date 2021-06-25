@@ -1,6 +1,6 @@
 import { User } from '../types/user-types'
 
-export function userIsLoggedIn(userData: User | null): boolean {
+export function userLoggedIn(userData: User | null): boolean {
   if (Number.isInteger(userData?.id) && typeof userData?.name === 'string') {
     return true
   } else {
