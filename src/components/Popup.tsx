@@ -15,16 +15,19 @@ import { MediaDetectionMessage } from '../components/MediaDetectionMessage'
 import { AnilistSearchBox } from '../components/AnilistSearchBox'
 import { AnilistSearchResults } from '../components/AnilistSearchResults'
 import { AppState } from '../types/application-state'
+import { User } from '../types/user-types'
 
 export function Popup() {
   const initialState: AppState = {
-    appIsLoading: true,
     accessToken: null,
-    searchedMedia: null,
+    appIsReady: false,
     detectedMediaTitle: null,
+    searchedMedia: null,
+    showSearchedMediaNotFound: false,
+    showSearchedUserListNotFound: false,
+    showUpdateComplete: false,
     user: null,
     userList: null,
-    showUpdateComplete: false
   }
   const [appState, setAppState] = useState(initialState)
 
@@ -32,33 +35,39 @@ export function Popup() {
   useEffect(() => {
     const getInitialState = async () => {
       const accessToken = await getStoredAccessToken()
-      let userData = null
+      setAppState(prevState => { return { ...prevState, accessToken: accessToken } })
+
+      let userData = null as (User | null)
       if(accessToken) {
-        try { userData = await fetchUserData(accessToken) }
-        catch (customError) { console.error(customError.message, customError.data) }
+        try {
+          userData = await fetchUserData(accessToken)
+          setAppState(prevState => { return { ...prevState, user: userData } })
+        }
+        catch (error) { console.error(error.message, error.data) }
       }
+
       const mediaTitle = await getMediaTitle()
+      setAppState(prevState => { return { ...prevState, detectedMediaTitle: mediaTitle } })
 
-      let mediaData = null
       if (mediaTitle && userData) {
-        try { mediaData = await fetchAnilistMedia(mediaTitle) }
-        catch (error) { console.log('fetchAnilistMedia error', error) }
+        try {
+          const mediaData = await fetchAnilistMedia(mediaTitle)
+          setAppState(prevState => { return { ...prevState, searchedMedia: mediaData } })
+        } catch (error) {
+          console.log('fetchAnilistMedia error', error)
+        }
       }
 
-      let userList = null
-      if (mediaData && userData) {
-        try { userList = await fetchAnilistUserList(mediaData.id, userData.name) }
+      if (appState.searchedMedia && userData) {
+        try {
+          const userList = await fetchAnilistUserList(appState.searchedMedia.id, userData.name)
+          setAppState(prevState => { return { ...prevState, userList: userList } })
+        }
         catch (error) { console.log('fetchAnilistUserList error', error) }
       }
-      setAppState({
-        ...appState,
-        appIsLoading: false,
-        accessToken: accessToken,
-        user: userData,
-        detectedMediaTitle: mediaTitle,
-        searchedMedia: mediaData,
-        userList: userList
-      })
+
+      // ready to render
+      setAppState(prevState => { return { ...prevState, appIsReady: true } })
     }
     getInitialState()
   }, [])
@@ -126,7 +135,7 @@ export function Popup() {
       }) // end then
   }
 
-  if(appState.appIsLoading) {
+  if(!appState.appIsReady) {
     return <div id="app-loading">Loading...</div>
   } else if (!userLoggedIn(appState.user)) {
     return (

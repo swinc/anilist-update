@@ -3,13 +3,15 @@ import { AnilistMedia } from './anilist-media-type'
 import { AnilistUserList } from './anilist-user-list-type'
 
 export interface AppState {
-  appIsLoading: boolean,
+  appIsReady: boolean,
   accessToken: string | null,
   searchedMedia: AnilistMedia | null,
   detectedMediaTitle: string | null,
   user: User | null,
   userList: AnilistUserList | null,
-  showUpdateComplete: boolean
+  showUpdateComplete: boolean,
+  showSearchedMediaNotFound: boolean,
+  showSearchedUserListNotFound: boolean
 }
 
 export interface ParsedAuthData {
