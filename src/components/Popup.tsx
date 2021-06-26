@@ -2,9 +2,9 @@ import React, { useState, useEffect } from 'react'
 
 import {
   fetchUserData,
-  querySearchMedia,
-  queryUserMediaNotes,
-  updateUserMediaNotes
+  fetchAnilistMedia,
+  fetchAnilistUserList,
+  updateUserList
 } from '../lib/query-anilist'
 import { getStoredAccessToken } from '../lib/get-stored-access-token'
 import { getMediaTitle } from '../lib/get-media-title'
@@ -14,16 +14,16 @@ import { LoggedOutMessage } from '../components/LoggedOutMessage'
 import { MediaDetectionMessage } from '../components/MediaDetectionMessage'
 import { AnilistSearchBox } from '../components/AnilistSearchBox'
 import { AnilistSearchResults } from '../components/AnilistSearchResults'
-import { AppState } from '../types/types'
+import { AppState } from '../types/application-state'
 
 export function Popup() {
   const initialState: AppState = {
     appIsLoading: true,
     accessToken: null,
-    mediaSearchData: null,
-    mediaTitle: null,
+    searchedMedia: null,
+    detectedMediaTitle: null,
     user: null,
-    userMediaListData: null,
+    userList: null,
     showUpdateComplete: false
   }
   const [appState, setAppState] = useState(initialState)
@@ -38,20 +38,26 @@ export function Popup() {
         catch (customError) { console.error(customError.message, customError.data) }
       }
       const mediaTitle = await getMediaTitle()
+
       let mediaData = null
-      let userMediaListData = null
       if (mediaTitle && userData) {
-        mediaData = await querySearchMedia(mediaTitle)
-        userMediaListData = await queryUserMediaNotes(mediaData.data.Media!.id, userData.name)
+        try { mediaData = await fetchAnilistMedia(mediaTitle) }
+        catch (error) { console.log('fetchAnilistMedia error', error) }
+      }
+
+      let userList = null
+      if (mediaData && userData) {
+        try { userList = await fetchAnilistUserList(mediaData.id, userData.name) }
+        catch (error) { console.log('fetchAnilistUserList error', error) }
       }
       setAppState({
         ...appState,
         appIsLoading: false,
         accessToken: accessToken,
         user: userData,
-        mediaTitle: mediaTitle,
-        mediaSearchData: mediaData,
-        userMediaListData: userMediaListData
+        detectedMediaTitle: mediaTitle,
+        searchedMedia: mediaData,
+        userList: userList
       })
     }
     getInitialState()
@@ -82,38 +88,38 @@ export function Popup() {
   }
 
   const doMediaSearch = async (searchString: string) => {
-    const mediaSearchData = await querySearchMedia(searchString)
-    let mediaListData = null
-    if(userLoggedIn(appState.user) && mediaSearchData?.data?.Media?.id) {
-      mediaListData = await queryUserMediaNotes(
-        mediaSearchData.data.Media.id, appState.user!.name
-      )
+    let mediaSearchData = null
+    try { mediaSearchData = await fetchAnilistMedia(searchString) }
+    catch (error) { console.log('doMediaSearch error', error) }
+
+    let userList = null
+    if(userLoggedIn(appState.user) && mediaSearchData?.id) {
+      try {
+        userList = await fetchAnilistUserList(mediaSearchData.id, appState.user!.name)
+      } catch (error) { console.log('fetchAnilistUserList error', error) }
     }
+
     setAppState({
       ...appState,
-      mediaSearchData: mediaSearchData,
-      userMediaListData: mediaListData
+      searchedMedia: mediaSearchData,
+      userList: userList
     })
   }
 
   const doUserNotesUpdate = async (episodeProgress: string, userScore: string) => {
-    const mediaId = appState.mediaSearchData?.data.Media?.id
+    const mediaId = appState.searchedMedia?.id
     if(typeof mediaId === 'undefined' || typeof appState.accessToken !== 'string') {
       console.error('Cannot update user notes because mediaId or accessToken are undefined.')
       return
     }
-    updateUserMediaNotes(mediaId, parseInt(episodeProgress), parseInt(userScore), appState.accessToken)
+    updateUserList(mediaId, parseInt(episodeProgress), parseInt(userScore), appState.accessToken)
       .then((response) => {
         setAppState({
           ...appState,
-          userMediaListData: {
-            data: {
-              MediaList: {
-                ...appState.userMediaListData!.data.MediaList,
-                progress: response.data.SaveMediaListEntry.progress,
-                score: response.data.SaveMediaListEntry.score,
-              }
-            }
+          userList: {
+            ...appState.userList!,
+            progress: response.data.SaveMediaListEntry.progress,
+            score: response.data.SaveMediaListEntry.score,
           },
           showUpdateComplete: true
         }) // end setAppState
@@ -126,21 +132,21 @@ export function Popup() {
     return (
       <React.Fragment>
         <LoggedOutMessage onLogin={doLogin} />
-        <MediaDetectionMessage mediaTitle={appState.mediaTitle} />
+        <MediaDetectionMessage mediaTitle={appState.detectedMediaTitle} />
       </React.Fragment>
     )
   } else {
     return (
       <React.Fragment>
         <LoggedInMessage user={appState.user!} onLogout={doLogout} />
-        <MediaDetectionMessage mediaTitle={appState.mediaTitle} />
-        <AnilistSearchBox mediaTitle={appState.mediaTitle} onMediaSearch={doMediaSearch} />
+        <MediaDetectionMessage mediaTitle={appState.detectedMediaTitle} />
+        <AnilistSearchBox mediaTitle={appState.detectedMediaTitle} onMediaSearch={doMediaSearch} />
         <AnilistSearchResults
-          mediaSearchData={appState.mediaSearchData}
-          userMediaListData={appState.userMediaListData}
-          onUserNotesUpdate={doUserNotesUpdate}
+          searchedMedia={appState.searchedMedia}
+          userList={appState.userList}
+          onUserListUpdate={doUserNotesUpdate}
           showUpdateComplete={appState.showUpdateComplete}
-          key={appState.mediaSearchData?.data?.Media?.id}
+          key={appState.searchedMedia?.id}
         />
       </React.Fragment>
     )
