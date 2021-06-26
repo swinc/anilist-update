@@ -4,7 +4,11 @@ type CustomErrorObject = {
 }
 
 export class CustomError extends Error {
-  constructor(_customErrorObject: CustomErrorObject, ...params: any[]) {
+
+  message: string
+  data: any
+
+  constructor(customErrorObject: CustomErrorObject, ...params: any[]) {
     super(...params)
 
     // Maintains proper stack trace for where our error was thrown (only available on V8)
@@ -13,5 +17,7 @@ export class CustomError extends Error {
     }
 
     this.name = 'CustomError'
+    this.message = customErrorObject.message
+    this.data = customErrorObject.data
   }
 }
