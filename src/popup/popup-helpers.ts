@@ -1,6 +1,7 @@
 import { getStoredAccessToken } from '../lib/get-stored-access-token'
 import { getMediaTitle } from '../lib/get-media-title'
-import { fetchUserData, fetchAnilistMedia, fetchAnilistUserList } from '../lib/query-anilist'
+import { getUserData } from '../lib/get-user-data'
+import { fetchAnilistMedia, fetchAnilistUserList } from '../lib/query-anilist'
 
 import { AnilistMedia } from '../types/anilist-media-type'
 import { User } from '../types/user-types'
@@ -16,7 +17,7 @@ export async function getInitialState() {
   let showSearchedUserListNotFound: boolean = false
 
   accessToken = await getStoredAccessToken()
-  if (accessToken) { userData = await fetchUserData(accessToken) }
+  if (accessToken) { userData = await getUserData(accessToken) }
   mediaTitle = await getMediaTitle()
 
   if (mediaTitle && userData) {

@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom'
 
 import { getInitialState } from './popup-helpers'
 import {
-  fetchUserData,
   fetchAnilistMedia,
   fetchAnilistUserList,
   updateUserList
 } from '../lib/query-anilist'
+import { getUserData } from '../lib/get-user-data'
 import { userLoggedIn } from '../lib/state-queries'
 import { LoggedInMessage } from '../components/LoggedInMessage'
 import { LoggedOutMessage } from '../components/LoggedOutMessage'
@@ -51,7 +51,7 @@ export function Popup() {
     chrome.runtime.sendMessage('do-login', async (response) => {
       let userData: null | User = null
       if (response.accessToken) {
-        userData = await fetchUserData(response.accessToken)
+        userData = await getUserData(response.accessToken)
       }
       setAppState(prevState => {
         return { ...prevState, accessToken: response.accessToken, user: userData }
@@ -70,7 +70,7 @@ export function Popup() {
     try {
       mediaData = await fetchAnilistMedia(searchString)
     } catch (error) {
-      if (error.data[0].message === "Not Found.") {
+      if (error.is404()) {
         setAppState(prevState => {
           return {
             ...prevState,
@@ -99,7 +99,7 @@ export function Popup() {
           }
         })
       } catch (error) {
-        if (error.data[0].message === "Not Found.") {
+        if (error.is404()) {
           setAppState(prevState => {
             return {
               ...prevState,
