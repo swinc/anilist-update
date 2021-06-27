@@ -23,3 +23,7 @@ When the popup page opens, it sends a message (`get-media-title`) to the content
 Likewise, if a user clicks the login button, popup will send a message (`do-login`) which is received by the background service worker to start the login flow.
 
 The popup page cannot be relied upon to do asynchronous work if there is a chance it will close (i.e. during login). When the popup page closes, code execution stops.
+
+## Notes
+
+On title not found, the Anilist API responds with a 404 status code, which causes an error to be displayed in the Javascript console. There is apparently no way to disable this.

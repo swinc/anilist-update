@@ -7,6 +7,6 @@ export function getStoredAccessToken(): Promise<string> {
         } else {
           resolve(response.accessToken)
         }
-      })
+    })
   })
 }

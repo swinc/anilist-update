@@ -5,5 +5,5 @@ export function anilistNotification(message: string) {
       message: message,
       iconUrl:'../images/icon128.png'
   };
-  chrome.notifications.create(null, options);
+  chrome.notifications.create('', options);
 }

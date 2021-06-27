@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
 interface AnilistSearchBoxProps {
-  mediaTitle: string,
+  mediaTitle: string | null,
   onMediaSearch: Function
 }
 
@@ -17,9 +17,10 @@ export function AnilistSearchBox(props: AnilistSearchBoxProps) {
   }
 
   return (
-    <p>Search Anilist:
-      <input type="text" value={searchString ?? ''}
+    <div id="anilist-search-box">
+      <span id="search-text">Search Anilist:</span>
+      <input id="search-box" type="text" value={searchString ?? ''}
         onChange={handleInputChange} onKeyDown={handleSearchKeyDown} />
-    </p>
+    </div>
   )
 }

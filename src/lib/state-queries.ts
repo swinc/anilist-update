@@ -1,14 +1,17 @@
-import { UserData, MediaData, MediaListData } from './types'
+import { User } from '../types/user-types'
+import { AnilistMedia } from '../types/anilist-media-type'
 
-export function userIsLoggedIn(userData: UserData): boolean {
-  if (Number.isInteger(userData?.data?.Viewer?.id) && userData?.data?.Viewer?.name !== null) {
+
+export function userLoggedIn(userData: User | null): boolean {
+  if (Number.isInteger(userData?.id) && typeof userData?.name === 'string') {
     return true
   } else {
     return false
   }
 }
 
-export function mediaTitleIsDetected(mediaTitle: string): boolean {
+
+export function mediaTitleIsDetected(mediaTitle: any): boolean {
   if (typeof mediaTitle === 'string' && mediaTitle.length > 0) {
     return true;
   } else {
@@ -16,13 +19,12 @@ export function mediaTitleIsDetected(mediaTitle: string): boolean {
   }
 }
 
-export function mediaSearchDataIsAvailable(mediaData: MediaData) {
+
+export function mediaSearchDataIsAvailable(mediaData: AnilistMedia | null) {
   if (
-    typeof mediaData?.data?.Media?.coverImage?.medium === 'string' &&
-    mediaData?.data?.Media?.coverImage?.medium.length > 0 &&
-    Number.isInteger(mediaData?.data?.Media?.id) &&
-    typeof mediaData?.data?.Media?.title?.english === 'string' &&
-    mediaData?.data?.Media?.title?.english.length > 0
+    Number.isInteger(mediaData?.id) &&
+    typeof mediaData?.title === 'string' &&
+    mediaData?.title.length > 0
   ) {
     return true
   } else {
@@ -30,11 +32,9 @@ export function mediaSearchDataIsAvailable(mediaData: MediaData) {
   }
 }
 
-export function userMediaNotesAreAvailable(userMediaListData: MediaListData) {
-  if (
-    Number.isInteger(userMediaListData?.data?.MediaList?.progress) &&
-    Number.isInteger(userMediaListData?.data?.MediaList?.score)
-  ) {
+
+export function userListIsAvailable(userList: any) {
+  if (Number.isInteger(userList?.progress) && Number.isInteger(userList?.score)) {
     return true
   } else {
     return false

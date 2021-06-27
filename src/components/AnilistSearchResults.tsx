@@ -1,19 +1,21 @@
 import React, { useState } from 'react'
 
-import { mediaSearchDataIsAvailable, userMediaNotesAreAvailable } from '../lib/state-queries'
-import { MediaData, MediaListData } from '../lib/types'
+import { AnilistMedia } from '../types/anilist-media-type'
+import { AnilistUserList } from '../types/anilist-user-list-type'
 
 interface AnilistSearchResultsProps {
-  mediaSearchData: MediaData,
-  userMediaListData: MediaListData
-  onUserNotesUpdate: Function,
-  showUpdateComplete: boolean
+  searchedMedia: AnilistMedia | null,
+  userList: AnilistUserList | null
+  onUserListUpdate: Function,
+  showUpdateComplete: boolean,
+  showSearchedMediaNotFound: boolean,
+  showSearchedUserListNotFound: boolean
 }
 
 export function AnilistSearchResults(props: AnilistSearchResultsProps) {
   const [buttonText, setButtonText] = useState('Update')
-  const [episodeProgress, setEpisodeProgress] = useState(props.userMediaListData?.data?.MediaList?.progress)
-  const [userScore, setUserScore] = useState(props.userMediaListData?.data?.MediaList?.score)
+  const [episodeProgress, setEpisodeProgress] = useState(props.userList?.progress)
+  const [userScore, setUserScore] = useState(props.userList?.score)
 
   const handleEpisodeProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEpisodeProgress(parseInt(e.target.value))
@@ -25,29 +27,34 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
 
   const handleUpdateClick = () => {
     setButtonText('Updating...')
-    props.onUserNotesUpdate(episodeProgress, userScore)
+    props.onUserListUpdate(episodeProgress, userScore)
   }
 
-  if (
-    mediaSearchDataIsAvailable(props.mediaSearchData) &&
-    userMediaNotesAreAvailable(props.userMediaListData)
-  ) {
-    const title = props.mediaSearchData.data.Media.title.english
-    const imageUrl = props.mediaSearchData.data.Media.coverImage.medium
-    const mediaId = props.mediaSearchData.data.Media.id
-    const mediaUrl = 'https://anilist.co/anime/' + mediaId
-    const episodes = props.mediaSearchData.data.Media.episodes
+  if (props.showSearchedMediaNotFound) {
+    return <p id="title-not-found">Title not found on Anilist.</p>
+  } else if (props.showSearchedUserListNotFound) {
+    const title = props.searchedMedia!.title
     return (
-      <div>
+      <p id="title-not-on-user-list">{`The Anilist title "${title}" is not on your list.`}</p>
+    )
+  } else if (props.searchedMedia && props.userList) {
+    const title = props.searchedMedia!.title
+    const imageUrl = props.searchedMedia!.coverImageUrl
+    const mediaId = props.searchedMedia!.id
+    const mediaUrl = 'https://anilist.co/anime/' + mediaId
+    const episodes = props.searchedMedia!.episodes
+    return (
+      <div id="anilist-search-results">
         <p>Closest match:</p>
-        <div id="content-block">
-          <img id="anilist-match--image" width="100" src={imageUrl} />
+        <div id="search-content">
+          <img id="anilist-match-image" width="100" src={imageUrl} />
           <div id="content-ui">
             <div id="content-ui--title">
-            <a id="title-link" href={mediaUrl}>{title}</a></div>
+              <a id="title-link" href={mediaUrl}>{title}</a>
+            </div>
             <div id="content-ui--total-episodes">Total Episodes: {episodes}</div>
             <div id="content-ui--progress">
-              Episode Progress
+              <span>Episode Progress</span>
               <input type="number"
                      id="episode-progress"
                      name="Episode Progress"
@@ -56,7 +63,7 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
                      onChange={handleEpisodeProgressChange} />
             </div>
             <div id="content-ui--score">
-              Score
+              <span>Score</span>
               <input
                 type="number"
                 id="score"
@@ -71,12 +78,7 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
         </div>
       </div>
     )
-  } else if (mediaSearchDataIsAvailable(props.mediaSearchData) &&
-             !userMediaNotesAreAvailable(props.userMediaListData) ) {
-    return (
-      <p>This title is not on your list.</p>
-    )
-  } else { // no mediaData or no MediaListData
+  } else {
     return null
   }
 }
