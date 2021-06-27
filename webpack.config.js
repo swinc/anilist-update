@@ -4,7 +4,7 @@ module.exports = {
   entry: {
     background: { import: './src/background.ts', filename: './app/[name].js' },
     "content-script": { import: './src/content-script.ts', filename: './app/[name].js' },
-    popup: { import: './src/popup/popup.tsx', filename: './app/popup/[name].js' }
+    popup: { import: './src/popup/Popup.tsx', filename: './app/popup/[name].js' }
   },
   devtool: 'inline-source-map',
   mode: 'development',
