@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 
+import { getInitialState } from './popup-helpers'
 import {
   fetchUserData,
   fetchAnilistMedia,
   fetchAnilistUserList,
   updateUserList
 } from '../lib/query-anilist'
-import { getStoredAccessToken } from '../lib/get-stored-access-token'
-import { getMediaTitle } from '../lib/get-media-title'
 import { userLoggedIn } from '../lib/state-queries'
 import { LoggedInMessage } from '../components/LoggedInMessage'
 import { LoggedOutMessage } from '../components/LoggedOutMessage'
@@ -18,10 +17,9 @@ import { AnilistSearchResults } from '../components/AnilistSearchResults'
 import { AppState } from '../types/application-state'
 import { User } from '../types/user-types'
 import { AnilistMedia } from '../types/anilist-media-type'
-import { AnilistUserList } from '../types/anilist-user-list-type'
 
 export function Popup() {
-  const initialState: AppState = {
+  const defaultState: AppState = {
     accessToken: null,
     appIsReady: false,
     detectedMediaTitle: null,
@@ -32,59 +30,21 @@ export function Popup() {
     user: null,
     userList: null,
   }
-  const [appState, setAppState] = useState(initialState)
+  const [appState, setAppState] = useState(defaultState)
 
   // initial state pull
   useEffect(() => {
-    const getInitialState = async () => {
-      let accessToken: null | string = null
-      let mediaTitle: null | string = null
-      let mediaData: null | AnilistMedia = null
-      let userData: null | User = null
-      let userList: null | AnilistUserList = null
-      let showSearchedMediaNotFound: boolean = false
-      let showSearchedUserListNotFound: boolean = false
-
-      accessToken = await getStoredAccessToken()
-      if (accessToken) { userData = await fetchUserData(accessToken) }
-      mediaTitle = await getMediaTitle()
-
-      if (userData) {
-        if (mediaTitle) {
-          try { mediaData = await fetchAnilistMedia(mediaTitle) }
-          catch (error) {
-            if (error.data[0].message === "Not Found.") {
-              showSearchedMediaNotFound = true
-            }
-          }
-        }
-
-        if (mediaData) {
-          try { userList = await fetchAnilistUserList(mediaData.id, userData.name) }
-          catch (error) {
-            if (error.data[0].message === "Not Found.") {
-              showSearchedUserListNotFound = true
-            }
-          }
-        }
-      }
-
-      // ready to render
+    // wrap function because useEffect cannot handle async function
+    (async function() {
+      const initialState = await getInitialState()
       setAppState(prevState => {
         return {
           ...prevState,
-          accessToken: accessToken,
-          appIsReady: true,
-          detectedMediaTitle: mediaTitle,
-          searchedMedia: mediaData,
-          showSearchedMediaNotFound: showSearchedMediaNotFound,
-          showSearchedUserListNotFound: showSearchedUserListNotFound,
-          user: userData,
-          userList: userList,
+          ...initialState,
+          appIsReady: true
         }
       })
-    }
-    getInitialState()
+    }()) // end async
   }, [])
 
   const doLogin = () => {

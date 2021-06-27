@@ -20,4 +20,8 @@ export class CustomError extends Error {
     this.message = customErrorObject.message
     this.data = customErrorObject.data
   }
+
+  is404() {
+    return Array.isArray(this.data) && this.data[0].message === "Not Found."
+  }
 }
