@@ -25,7 +25,8 @@ export async function queryAnilist(
     data: {
       query: query,
       variables: variables
-    }
+    },
+    validateStatus: function (status) { return status < 500 } // no errors on 404
   }
   if (typeof accessToken === 'string') { // add to request
     Object.assign(requestConfig, {

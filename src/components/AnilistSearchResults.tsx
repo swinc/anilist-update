@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 
-import { mediaSearchDataIsAvailable, userListIsAvailable } from '../lib/state-queries'
 import { AnilistMedia } from '../types/anilist-media-type'
 import { AnilistUserList } from '../types/anilist-user-list-type'
 
@@ -8,7 +7,9 @@ interface AnilistSearchResultsProps {
   searchedMedia: AnilistMedia | null,
   userList: AnilistUserList | null
   onUserListUpdate: Function,
-  showUpdateComplete: boolean
+  showUpdateComplete: boolean,
+  showSearchedMediaNotFound: boolean,
+  showSearchedUserListNotFound: boolean
 }
 
 export function AnilistSearchResults(props: AnilistSearchResultsProps) {
@@ -29,10 +30,14 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
     props.onUserListUpdate(episodeProgress, userScore)
   }
 
-  if (
-    mediaSearchDataIsAvailable(props.searchedMedia) &&
-    userListIsAvailable(props.userList)
-  ) {
+  if (props.showSearchedMediaNotFound) {
+    return <p id="title-not-found">Title not found on Anilist.</p>
+  } else if (props.showSearchedUserListNotFound) {
+    const title = props.searchedMedia!.title
+    return (
+      <p id="title-not-on-user-list">{`The Anilist title "${title}" is not on your list.`}</p>
+    )
+  } else if (props.searchedMedia && props.userList) {
     const title = props.searchedMedia!.title
     const imageUrl = props.searchedMedia!.coverImageUrl
     const mediaId = props.searchedMedia!.id
@@ -73,15 +78,7 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
         </div>
       </div>
     )
-  } else if (mediaSearchDataIsAvailable(props.searchedMedia) &&
-             !userListIsAvailable(props.userList) ) {
-    const title = props.searchedMedia!.title
-    return (
-      <p id="title-not-on-user-list">{`The Anilist title "${title}" is not on your list.`}</p>
-    )
-  // } else if(props.mediaSearchData?.errors && props.mediaSearchData.errors[0].status === 404) {
-  //   return <p id="title-not-found">Title not found on Anilist.</p>
-  } else { // no mediaData or no MediaListData
+  } else {
     return null
   }
 }

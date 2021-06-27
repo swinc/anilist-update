@@ -16,6 +16,8 @@ import { AnilistSearchBox } from '../components/AnilistSearchBox'
 import { AnilistSearchResults } from '../components/AnilistSearchResults'
 import { AppState } from '../types/application-state'
 import { User } from '../types/user-types'
+import { AnilistMedia } from '../types/anilist-media-type'
+import { AnilistUserList } from '../types/anilist-user-list-type'
 
 export function Popup() {
   const initialState: AppState = {
@@ -34,54 +36,64 @@ export function Popup() {
   // initial state pull
   useEffect(() => {
     const getInitialState = async () => {
-      const accessToken = await getStoredAccessToken()
-      setAppState(prevState => { return { ...prevState, accessToken: accessToken } })
+      let accessToken: null | string = null
+      let mediaTitle: null | string = null
+      let mediaData: null | AnilistMedia = null
+      let userData: null | User = null
+      let userList: null | AnilistUserList = null
+      let showSearchedMediaNotFound: boolean = false
+      let showSearchedUserListNotFound: boolean = false
 
-      let userData = null as (User | null)
-      if(accessToken) {
-        try {
-          userData = await fetchUserData(accessToken)
-          setAppState(prevState => { return { ...prevState, user: userData } })
+      accessToken = await getStoredAccessToken()
+      if (accessToken) { userData = await fetchUserData(accessToken) }
+      mediaTitle = await getMediaTitle()
+
+      if (userData) {
+        if (mediaTitle) {
+          try { mediaData = await fetchAnilistMedia(mediaTitle) }
+          catch (error) {
+            if (error.data[0].message === "Not Found.") {
+              showSearchedMediaNotFound = true
+            }
+          }
         }
-        catch (error) { console.error(error.message, error.data) }
-      }
 
-      const mediaTitle = await getMediaTitle()
-      setAppState(prevState => { return { ...prevState, detectedMediaTitle: mediaTitle } })
-
-      if (mediaTitle && userData) {
-        try {
-          const mediaData = await fetchAnilistMedia(mediaTitle)
-          setAppState(prevState => { return { ...prevState, searchedMedia: mediaData } })
-        } catch (error) {
-          console.log('fetchAnilistMedia error', error)
+        if (mediaData) {
+          try { userList = await fetchAnilistUserList(mediaData.id, userData.name) }
+          catch (error) {
+            if (error.data[0].message === "Not Found.") {
+              showSearchedUserListNotFound = true
+            }
+          }
         }
-      }
-
-      if (appState.searchedMedia && userData) {
-        try {
-          const userList = await fetchAnilistUserList(appState.searchedMedia.id, userData.name)
-          setAppState(prevState => { return { ...prevState, userList: userList } })
-        }
-        catch (error) { console.log('fetchAnilistUserList error', error) }
       }
 
       // ready to render
-      setAppState(prevState => { return { ...prevState, appIsReady: true } })
+      setAppState(prevState => {
+        return {
+          ...prevState,
+          accessToken: accessToken,
+          appIsReady: true,
+          detectedMediaTitle: mediaTitle,
+          searchedMedia: mediaData,
+          showSearchedMediaNotFound: showSearchedMediaNotFound,
+          showSearchedUserListNotFound: showSearchedUserListNotFound,
+          user: userData,
+          userList: userList,
+        }
+      })
     }
     getInitialState()
   }, [])
 
   const doLogin = () => {
     chrome.runtime.sendMessage('do-login', async (response) => {
-      let userData = null
+      let userData = null as (null | User)
       if (response.accessToken) {
         userData = await fetchUserData(response.accessToken)
       }
-      setAppState({
-        ...appState,
-        accessToken: response.accessToken,
-        user: userData
+      setAppState(prevState => {
+        return { ...prevState, accessToken: response.accessToken, user: userData }
       })
     })
   }
@@ -89,30 +101,60 @@ export function Popup() {
   const doLogout = () => {
     chrome.identity.clearAllCachedAuthTokens(() => {})
     chrome.storage.sync.clear()
-    setAppState({
-      ...appState,
-      accessToken: null,
-      user: null
-    })
+    setAppState(prevState => { return { ...prevState, accessToken: null, user: null } })
   }
 
   const doMediaSearch = async (searchString: string) => {
-    let mediaSearchData = null
-    try { mediaSearchData = await fetchAnilistMedia(searchString) }
-    catch (error) { console.log('doMediaSearch error', error) }
-
-    let userList = null
-    if(userLoggedIn(appState.user) && mediaSearchData?.id) {
-      try {
-        userList = await fetchAnilistUserList(mediaSearchData.id, appState.user!.name)
-      } catch (error) { console.log('fetchAnilistUserList error', error) }
+    // do media search; if not found, set everything to null
+    // if found, do userList search
+    let mediaData = null as (null | AnilistMedia)
+    try {
+      mediaData = await fetchAnilistMedia(searchString)
+    } catch (error) {
+      if (error.data[0].message === "Not Found.") {
+        setAppState(prevState => {
+          return {
+            ...prevState,
+            searchedMedia: null,
+            userList: null,
+            showSearchedMediaNotFound: true,
+            showSearchedUserListNotFound: false
+          }
+        })
+        return
+      } else { // unknown error
+        console.error('doMediaSearch() error', error)
+      }
     }
 
-    setAppState({
-      ...appState,
-      searchedMedia: mediaSearchData,
-      userList: userList
-    })
+    if(userLoggedIn(appState.user) && mediaData?.id) {
+      try {
+        const userList = await fetchAnilistUserList(mediaData.id, appState.user!.name)
+        setAppState(prevState => {
+          return {
+            ...prevState,
+            searchedMedia: mediaData,
+            userList: userList,
+            showSearchedMediaNotFound: false,
+            showSearchedUserListNotFound: false
+          }
+        })
+      } catch (error) {
+        if (error.data[0].message === "Not Found.") {
+          setAppState(prevState => {
+            return {
+              ...prevState,
+              searchedMedia: mediaData,
+              userList: null,
+              showSearchedMediaNotFound: false,
+              showSearchedUserListNotFound: true
+            }
+          })
+        } else { // unknown error
+          console.error('doMediaSearch() error', error)
+        }
+      }
+    }
   }
 
   const doUserNotesUpdate = async (episodeProgress: string, userScore: string) => {
@@ -152,6 +194,8 @@ export function Popup() {
         <AnilistSearchBox mediaTitle={appState.detectedMediaTitle} onMediaSearch={doMediaSearch} />
         <AnilistSearchResults
           searchedMedia={appState.searchedMedia}
+          showSearchedMediaNotFound={appState.showSearchedMediaNotFound}
+          showSearchedUserListNotFound={appState.showSearchedUserListNotFound}
           userList={appState.userList}
           onUserListUpdate={doUserNotesUpdate}
           showUpdateComplete={appState.showUpdateComplete}
