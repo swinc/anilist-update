@@ -26,7 +26,6 @@ export async function getStoredUserData(): Promise<StoredUserData> {
 
 // first attempts to retrive from local cache; if not present, will go to network and save
 export async function getUserData(accessToken: string): Promise<User> {
-  debugger
   const storedUserData = await getStoredUserData()
   if (!_.isEmpty(storedUserData)) {
     return {
