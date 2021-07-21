@@ -9,12 +9,14 @@ import {
 import { getStoredAccessToken } from '../lib/get-stored-access-token'
 import { getMediaTitle } from '../lib/get-media-title'
 import { userIsLoggedIn } from '../lib/state-queries'
+import { addMediaIdToList } from '../lib/query-anilist'
 import { LoggedInMessage } from '../components/LoggedInMessage'
 import { LoggedOutMessage } from '../components/LoggedOutMessage'
 import { MediaDetectionMessage } from '../components/MediaDetectionMessage'
 import { AnilistSearchBox } from '../components/AnilistSearchBox'
 import { AnilistSearchResults } from '../components/AnilistSearchResults'
 import { AppState, UserData, MediaData, MediaListData, SaveMediaListEntry } from '../lib/types'
+
 
 export function Popup() {
   const initialState: AppState = {
@@ -113,6 +115,25 @@ export function Popup() {
       }) // end then
   }
 
+  const doAddMediaIdToList = async (mediaId: number) => {
+    addMediaIdToList(mediaId, appState.accessToken)
+      .then(() => queryUserMediaNotes(mediaId, appState.userData.data.Viewer.name))
+      .then((response) => {
+        setAppState({
+          ...appState,
+            userMediaListData: {
+              data: {
+                MediaList: {
+                  progress: response.data.MediaList.progress,
+                  score: response.data.MediaList.score,
+                  status: response.data.MediaList.status,
+              }
+            }
+          },
+        }) // end setAppState
+      }) // end then
+  }
+
   if(appState.appIsLoading) {
     return <p>Loading...</p>
   } else {
@@ -131,6 +152,7 @@ export function Popup() {
             mediaSearchData={appState.mediaSearchData}
             userMediaListData={appState.userMediaListData}
             onUserNotesUpdate={doUserNotesUpdate}
+            onAddMediaIdToList={doAddMediaIdToList}
             showUpdateComplete={appState.showUpdateComplete}
             key={appState.mediaSearchData?.data?.Media?.id}
           />

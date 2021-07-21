@@ -7,6 +7,7 @@ interface AnilistSearchResultsProps {
   mediaSearchData: MediaData,
   userMediaListData: MediaListData
   onUserNotesUpdate: Function,
+  onAddMediaIdToList: Function,
   showUpdateComplete: boolean
 }
 
@@ -26,6 +27,10 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
   const handleUpdateClick = () => {
     setButtonText('Updating...')
     props.onUserNotesUpdate(episodeProgress, userScore)
+  }
+
+  const handleAddMediaClick = () => {
+    props.onAddMediaIdToList(props.mediaSearchData.data.Media.id)
   }
 
   if (
@@ -74,7 +79,10 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
   } else if (mediaSearchDataIsAvailable(props.mediaSearchData) &&
              !userMediaNotesAreAvailable(props.userMediaListData) ) {
     return (
-      <p>This title is not on your list.</p>
+      <React.Fragment>
+        <p>This title is not on your list.</p>
+        <button onClick={handleAddMediaClick}>Add title to list</button>
+      </React.Fragment>
     )
   } else { // no mediaData or no MediaListData
     return null

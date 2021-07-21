@@ -128,6 +128,28 @@ export function updateUserMediaNotes(
   })
 }
 
+export function addMediaIdToList(mediaId: number, accessToken: string) {
+  return new Promise((resolve, reject) => {
+    if (isNaN(mediaId) || !accessToken) {
+      reject(new Error(`ERROR: invalid value for mediaId (${mediaId}), or accessToken (${accessToken})`))
+      return
+    }
+    const query = `
+      mutation ($mediaId: Int) {
+          SaveMediaListEntry (mediaId: $mediaId) {
+              id
+              mediaId
+              status
+          }
+      }
+    `
+    const variables = { mediaId: mediaId}
+    queryAnilist(query, variables, accessToken)
+      .then((result) => resolve(result))
+      .catch((error) => reject(error))
+  })
+}
+
 export function queryUserData(accessToken: string): Promise<UserData> {
   return new Promise((resolve, reject) => {
     const query = `
