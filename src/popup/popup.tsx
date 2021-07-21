@@ -5,8 +5,9 @@ import { getInitialState } from './popup-helpers'
 import {
   fetchAnilistMedia,
   fetchAnilistUserList,
-  updateUserList
+  updateUserList,
 } from '../lib/query-anilist'
+import { addMediaIdToList } from '../lib/query-anilist'
 import { getUserData } from '../lib/get-user-data'
 import { userLoggedIn } from '../lib/state-queries'
 import { LoggedInMessage } from '../components/LoggedInMessage'
@@ -136,6 +137,20 @@ export function Popup() {
       }) // end then
   }
 
+  const doAddMediaToList = async (mediaId: number) => {
+    addMediaIdToList(mediaId, appState.accessToken!)
+      .then((userList) => {
+        console.log('updating state')
+        setAppState((prevState) => {
+          return {
+            ...prevState,
+            userList: userList,
+            showSearchedUserListNotFound: false
+          }
+        })
+      })
+  }
+
   if(!appState.appIsReady) {
     return <div id="app-loading">Loading...</div>
   } else if (!userLoggedIn(appState.user)) {
@@ -157,6 +172,7 @@ export function Popup() {
           showSearchedUserListNotFound={appState.showSearchedUserListNotFound}
           userList={appState.userList}
           onUserListUpdate={doUserNotesUpdate}
+          onAddMediaIdToList={doAddMediaToList}
           showUpdateComplete={appState.showUpdateComplete}
           key={appState.searchedMedia?.id}
         />

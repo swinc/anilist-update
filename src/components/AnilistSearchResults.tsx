@@ -7,6 +7,7 @@ interface AnilistSearchResultsProps {
   searchedMedia: AnilistMedia | null,
   userList: AnilistUserList | null
   onUserListUpdate: Function,
+  onAddMediaIdToList: Function,
   showUpdateComplete: boolean,
   showSearchedMediaNotFound: boolean,
   showSearchedUserListNotFound: boolean
@@ -30,12 +31,19 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
     props.onUserListUpdate(episodeProgress, userScore)
   }
 
+  const handleAddMediaClick = () => {
+    props.onAddMediaIdToList(props.searchedMedia?.id)
+  }
+
   if (props.showSearchedMediaNotFound) {
     return <p id="title-not-found">Title not found on Anilist.</p>
   } else if (props.showSearchedUserListNotFound) {
     const title = props.searchedMedia!.title
     return (
-      <p id="title-not-on-user-list">{`The Anilist title "${title}" is not on your list.`}</p>
+      <React.Fragment>
+        <p id="title-not-on-user-list">{`The Anilist title "${title}" is not on your list.`}</p>
+        <button onClick={handleAddMediaClick}>Add title to list</button>
+      </React.Fragment>
     )
   } else if (props.searchedMedia && props.userList) {
     const title = props.searchedMedia!.title

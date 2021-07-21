@@ -34,15 +34,18 @@ type MediaListDataFields = {
   id: number,
   mediaId: number,
   progress: number,
-  score: number
+  score: number,
+  status: string
 }
 
 export type AnilistSaveUserListResponse = {
   data: {
     SaveMediaListEntry: {
       id: number,
+      mediaId: number,
       progress: number,
-      score: number
+      score: number,
+      status: string
     }
   }
 }

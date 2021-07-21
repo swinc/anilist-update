@@ -87,6 +87,7 @@ export async function fetchAnilistUserList(mediaId: number, userName: string): P
         mediaId
         progress
         score
+        status
       }
     }
   `
@@ -105,7 +106,8 @@ export async function fetchAnilistUserList(mediaId: number, userName: string): P
     listId: result.data.MediaList.id,
     mediaId: result.data.MediaList.mediaId,
     progress: result.data.MediaList.progress,
-    score: result.data.MediaList.score
+    score: result.data.MediaList.score,
+    status: result.data.MediaList.status
   }
 }
 
@@ -130,6 +132,33 @@ export async function updateUserList(
   // no try; let errors bubble
   const result = await queryAnilist(query, variables, accessToken) as AnilistSaveUserListResponse
   return result
+}
+
+export async function addMediaIdToList(mediaId: number, accessToken: string): Promise<AnilistUserList> {
+  if (isNaN(mediaId) || !accessToken) {
+    throw new Error(`ERROR: invalid value for mediaId (${mediaId}), or accessToken (${accessToken})`)
+  }
+  const query = `
+    mutation ($mediaId: Int) {
+        SaveMediaListEntry (mediaId: $mediaId) {
+            id
+            mediaId
+            progress
+            score
+            status
+        }
+    }
+  `
+  const variables = { mediaId: mediaId}
+  const result = await queryAnilist(query, variables, accessToken) as AnilistSaveUserListResponse
+
+  return {
+    listId: result.data.SaveMediaListEntry.id,
+    mediaId: result.data.SaveMediaListEntry.mediaId,
+    progress: result.data.SaveMediaListEntry.progress,
+    score: result.data.SaveMediaListEntry.score,
+    status: result.data.SaveMediaListEntry.status
+  }
 }
 
 
