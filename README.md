@@ -7,8 +7,10 @@ Currently this extension only attempts to identify media titles on [crunchyroll.
 ## Download and Test
 
 1. Download the repository (click "Code" -> "Download ZIP").
-2. From Chrome -> Manage Extensions, click "Load unpacked" and **select the "app" directory** of this repository on your local machine.
-3. Navigate to a supported anime site (e.g., crunchyroll.com) and test.
+2. `cd` to code directory and `npm install`
+3. Build app with `npm run build`
+3. From Chrome -> Manage Extensions, click "Load unpacked" and **select the "app" directory** of this repository on your local machine.
+4. Navigate to a supported anime site (e.g., crunchyroll.com) and test.
 
 ## Development Details
 
