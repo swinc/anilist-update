@@ -1,7 +1,9 @@
 import React, { useState } from 'react'
 
-import { AnilistMedia } from '../types/anilist-media-type'
-import { AnilistUserList } from '../types/anilist-user-list-type'
+import { AnilistMedia } from '../../types/anilist-media-type'
+import { AnilistUserList } from '../../types/anilist-user-list-type'
+
+import styles from './AnilistSearchResults.module.css'
 
 interface AnilistSearchResultsProps {
   searchedMedia: AnilistMedia | null,
@@ -54,14 +56,14 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
     return (
       <div id="anilist-search-results">
         <p>Closest match:</p>
-        <div id="search-content">
-          <img id="anilist-match-image" width="100" src={imageUrl} />
-          <div id="content-ui">
-            <div id="content-ui--title">
-              <a id="title-link" href={mediaUrl}>{title}</a>
+        <div>
+          <img className={styles.anilistMatchImage} width="100" src={imageUrl} />
+          <div className={styles.contentUI}>
+            <div>
+              <a className={styles.titleLink} href={mediaUrl}>{title}</a>
             </div>
-            <div id="content-ui--total-episodes">Total Episodes: {episodes}</div>
-            <div id="content-ui--progress">
+            <div className={styles.contentUITotalEpisodes}>Total Episodes: {episodes}</div>
+            <div className={styles.contentUIProgress}>
               <span>Episode Progress</span>
               <input type="number"
                      id="episode-progress"
@@ -70,7 +72,7 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
                      value={episodeProgress}
                      onChange={handleEpisodeProgressChange} />
             </div>
-            <div id="content-ui--score">
+            <div>
               <span>Score</span>
               <input
                 type="number"
@@ -80,8 +82,8 @@ export function AnilistSearchResults(props: AnilistSearchResultsProps) {
                 value={userScore}
                 onChange={handleUserScoreChange} />
             </div>
-            <button onClick={handleUpdateClick} id="update-button">{buttonText}</button>
-            { props.showUpdateComplete ? <div id="update-message">Updated!</div> : '' }
+            <button onClick={handleUpdateClick} className={styles.updateButton}>{buttonText}</button>
+            { props.showUpdateComplete ? <div>Updated!</div> : '' }
           </div>
         </div>
       </div>

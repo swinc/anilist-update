@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { mediaTitleIsDetected } from '../lib/state-queries'
+import { mediaTitleIsDetected } from '../../lib/state-queries'
 
 interface MediaDetectionMessageProps {
   mediaTitle: string | null,
@@ -8,8 +8,8 @@ interface MediaDetectionMessageProps {
 
 export function MediaDetectionMessage(props: MediaDetectionMessageProps) {
   if (mediaTitleIsDetected(props.mediaTitle)) {
-    return <p id="content-detected-text">You're watching {props.mediaTitle}.</p>
+    return <p>You're watching {props.mediaTitle}.</p>
   } else {
-    return <p id="no-content-detected-text">No content detected.</p>
+    return <p>No content detected.</p>
   }
 }

@@ -5,6 +5,8 @@ interface AnilistSearchBoxProps {
   onMediaSearch: Function
 }
 
+import styles from './AnilistSearchBox.module.css'
+
 export function AnilistSearchBox(props: AnilistSearchBoxProps) {
   const [searchString, setSearchString] = useState(props.mediaTitle)
 
@@ -19,7 +21,7 @@ export function AnilistSearchBox(props: AnilistSearchBoxProps) {
   return (
     <div id="anilist-search-box">
       <span id="search-text">Search Anilist:</span>
-      <input id="search-box" type="text" value={searchString ?? ''}
+      <input className={styles.searchBox} id="search-box" type="text" value={searchString ?? ''}
         onChange={handleInputChange} onKeyDown={handleSearchKeyDown} />
     </div>
   )

@@ -13,11 +13,9 @@ export function LoggedOutMessage(props: LoggedOutMessageProps) {
   }
 
   return (
-    <div id="logged-out-message">
-      <p id="account-not-connected-text">Your Anilist account is not connected.</p>
-      <button id="anilist-login-button"
-        onClick={handleLoginClick}>{buttonText}
-      </button>
+    <div>
+      <p>Your Anilist account is not connected.</p>
+      <button onClick={handleLoginClick}>{buttonText}</button>
     </div>
   )
 }

@@ -1,0 +1,25 @@
+.updateButton {
+  margin-left: 5px;
+  margin-top: 7px;
+}
+
+.contentUIProgress {
+  padding: 2px;
+}
+
+.contentUITotalEpisodes {
+  padding: 2px;
+}
+
+.anilistMatchImage{
+  margin: 5px
+}
+
+.contentUI {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.titleLink {
+  padding: 2px;
+}

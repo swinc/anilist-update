@@ -10,14 +10,15 @@ import {
 import { addMediaIdToList } from '../lib/query-anilist'
 import { getUserData } from '../lib/get-user-data'
 import { userLoggedIn } from '../lib/state-queries'
-import { LoggedInMessage } from '../components/LoggedInMessage'
-import { LoggedOutMessage } from '../components/LoggedOutMessage'
-import { MediaDetectionMessage } from '../components/MediaDetectionMessage'
-import { AnilistSearchBox } from '../components/AnilistSearchBox'
-import { AnilistSearchResults } from '../components/AnilistSearchResults'
+import { LoggedInMessage } from '../components/LoggedInMessage/LoggedInMessage'
+import { LoggedOutMessage } from '../components/LoggedOutMessage/LoggedOutMessage'
+import { MediaDetectionMessage } from '../components/MediaDetectionMessage/MediaDetectionMessage'
+import { AnilistSearchBox } from '../components/AnilistSearchBox/AnilistSearchBox'
+import { AnilistSearchResults } from '../components/AnilistSearchResults/AnilistSearchResults'
 import { AppState } from '../types/application-state'
 import { User } from '../types/user-types'
 import { AnilistMedia } from '../types/anilist-media-type'
+import './popup.css'
 
 export function Popup() {
   const defaultState: AppState = {
