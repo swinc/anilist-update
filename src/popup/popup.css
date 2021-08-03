@@ -6,66 +6,12 @@ body {
   width: 400px;
 }
 
-#popup-app {
-  background-color: rgb(21,31,46);
-  padding: 10px;
-  border-radius: 10px;
-}
-
 a {
   color:#3DB4F2;
 }
 
-#logout-link {
-  margin-left: 5px;
-}
-
-#update-button {
-  margin-top: 7px;
-}
-
-input {
-  margin-left: 5px;
-}
-
-#anilist-match-image{
-  margin:5px
-}
-
-#sign-out-link {
-  display: inline-block;
-}
-
-#content-image {
-  width: 100px;
-  display: inline-block;
-}
-
-#content-ui {
-  display: inline-block;
-  vertical-align: top;
-}
-
-#content-name {
-  vertical-align: top;
-}
-
-#title-link {
-  padding:2px;
-}
-
-#content-ui--total-episodes {
-    padding:2px;
-  }
-
-#content-ui--progress {
-    padding:2px;
-  }
-
-#content-ui--score {
-  padding:2px;
-      }
-
-#progress {
-  display: inline-block;
+#popup-app {
+  background-color: rgb(21,31,46);
+  border-radius: 10px;
+  padding: 10px;
 }

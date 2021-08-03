@@ -1,11 +1,12 @@
 const path = require('path');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CopyPlugin = require("copy-webpack-plugin")
 
 module.exports = {
   entry: {
-    background: { import: './src/background.ts', filename: './app/[name].js' },
-    "content-script": { import: './src/content-script.ts', filename: './app/[name].js' },
-    popup: { import: './src/popup/Popup.tsx', filename: './app/popup/[name].js' }
+    'background': './src/background.ts',
+    'content-script': './src/content-script.ts',
+    'popup': './src/popup/Popup.tsx'
   },
   devtool: 'inline-source-map',
   mode: 'development',
@@ -17,23 +18,47 @@ module.exports = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      { // import css *module* files
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: { modules: { localIdentName: '[name]__[local]' } }
+            // use '[hash:base64]' for production
+          }
+        ],
+        include: /\.module\.css$/
+      },
+      { // import css *global* files
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          'css-loader'
+        ],
+        exclude: /\.module\.css$/
+      },
     ],
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
   },
   output: {
-    path: path.resolve(__dirname)
+    path: __dirname + '/app/',
+    filename: (pathData) => {
+      return pathData.chunk.name === 'popup' ? '[name]/[name].js' : '[name].js'
+    }
   },
   plugins: [
+    new MiniCssExtractPlugin({
+      filename: '[name]/[name].css'
+    }),
     new CopyPlugin({
       patterns: [
-        { from: "src/manifest.json", to: "app/manifest.json" },
-        { from: "src/static/images", to: "app/images" },
-        { from: "src/options/options.css", to: "app/options/options.css" },
-        { from: "src/options/options.html", to: "app/options/options.html" },
-        { from: "src/popup/popup.css", to: "app/popup/popup.css" },
-        { from: "src/popup/popup.html", to: "app/popup/popup.html" },
+        { from: "src/manifest.json", to: "manifest.json" },
+        { from: "src/static/images", to: "images" },
+        { from: "src/options/options.html", to: "options/options.html" },
+        { from: "src/popup/popup.html", to: "popup/popup.html" },
       ],
     }),
   ]
