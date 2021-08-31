@@ -2,7 +2,7 @@
    "name": "AutoUpdater for AniList",
    "version": "1.0",
    "description": "An auto-updater for AniList.co",
-   "permissions": ["activeTab", "declarativeContent", "storage", "identity", "tabs", "notifications"],
+   "permissions": ["activeTab", "declarativeContent", "storage", "identity", "notifications"],
    "options_page": "options/options.html",
    "background": {
       "service_worker": "background.js",
